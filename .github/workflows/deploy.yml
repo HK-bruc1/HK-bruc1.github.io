@@ -50,49 +50,52 @@
           
           
           
-# 将 Hubo 博客构建后部署到 Github Pages
-name: Deploy github-pages
+name: Deploy to Github Pages # 工作流的名称
 
-# 在 master 主干分支的任何 push 事件都会触发本 DevOps 工作流水线
-on:
-  push:
-    branches: [ main ]
+on: # 触发条件
+  push: # 当有push操作时触发
+    branches: [main] # 只针对master分支
+  pull_request: # 当有pull request操作时触发
+    branches: [main] # 只针对master分支
 
-# 以下是本串行执行工作流的所有组成部分
 jobs:
-  # 这里只定义了一个名为 "deploy" 的多步骤作业
-  build-deploy-hugo-blog:
-    # 将后续的所有工作步骤都运行在最新版的 ubuntu 操作系统上
-    runs-on: ubuntu-latest
+  build: # 构建任务
+    runs-on: ubuntu-latest # 运行环境，最新的Ubuntu虚拟机
 
-    # 本构建和部署作业的所有步骤定义如下
+    permissions:
+      contents: write # 给默认的GITHUB_TOKEN写权限，以便提交和推送添加或更改的文件到仓库。
+
     steps:
+      - uses: actions/checkout@v4.1.1 # 检出代码
+      - uses: actions/cache@v4.0.0
+        with:
+            path: /home/runner/.cache/hugo_cache    # Linux系统的Hugo模块缓存路径
+            key: ${{ runner.os }}-hugomod-${{ hashFiles('**/go.sum') }}
+            restore-keys: |
+                ${{ runner.os }}-hugomod-
 
-    # Step 1 - Checks-out 你的代码库到 $GITHUB_WORKSPACE
-    - name: Checkout blog code repo
-      uses: actions/checkout@v2 # 这是 Github 官方提供的一个动作模块
-      with:
-          submodules: true  # 同步更新所使用的 Hugo 模板
-          fetch-depth: 0    # 更新到该模板最新的版本
+      - uses:  actions/setup-go@v5 # 安装Go语言环境
+        with:
+            go-version:  '1.21.6'
+            check-latest: false #保持与本地相同的配置
+      - run: go version # 显示Go版本以验证安装
 
-    # Step 2 - 配置最新版本的 Hugo 环境
-    - name: Setup Hugo
-      uses: peaceiris/actions-hugo@v2  # 这是 Github Actions 市场中的一个动作模块
-      with:
-          hugo-version: 'latest'
+      - name: Clean public directory # 新增：清理public目录的步骤
+        run: rm -rf public
 
-    # Step 3 - 清理代码库中 public 目录中的内容
-    - name: Clean public directory
-      run: rm -rf public  # 彻底删除这个目录
+      - name: Setup Hugo # 安装Hugo
+        uses: peaceiris/actions-hugo@v2.6.0
+        with:
+            hugo-version: '0.122.0' # 最新版hugo支持go的1.21.6
+            extended: true # 使用扩展版Hugo
 
-    # Step 4 - 用最新版本的 Hugo 构建个人博客站点
-    - name: Build blog site
-      run: hugo --minify
+      - name: Build # 构建网站
+        run: hugo --minify --gc # 执行Hugo构建命令，启用压缩和垃圾收集
 
-
-    # Step 6 - 将构建好的博客站点推送发布到 gh-pages 分支
-    - name: Deploy blog to Github-pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-          github_token: ${{ secrets.DEPLOY_KEY }}
-          publish_dir: ./public
+      - name: Deploy 🚀 # 部署到GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        with:
+            branch: gh-pages # 部署到gh-pages分支
+            folder: public # 指定部署的目录
+            clean: true # 清理部署分支，只保留最新的提交
+            single-commit: true # 部署时只创建一个提交
