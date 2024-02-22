@@ -15,32 +15,33 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v3  # 检出代码
-
+      - name: Checkout
+        uses: actions/checkout@v4.1.1 # 检出代码
+        
       - name: Cache Hugo resources  # 缓存 Hugo 资源
-        uses: actions/cache@v3
+        uses: actions/cache@v4.0.0
         env:
           cache-name: cache-hugo-resources
         with:
           path: resources  # 缓存路径
           key: ${{ env.cache-name }}  # 缓存的键值
 
-      - uses: actions/setup-go@v4  # 设置 Go 环境
+      - uses: actions/setup-go@v5.0.0  # 设置 Go 环境
         with:
-          go-version: "^1.17.0"  # 使用 Go 1.17.0 版本
+          go-version: "^1.21.6"  # 使用 Go 1.17.0 版本
       - run: go version  # 显示 Go 版本以验证安装
 
       - name: Setup Hugo  # 配置 Hugo
-        uses: peaceiris/actions-hugo@v2
+        uses: peaceiris/actions-hugo@v2.6.0
         with:
-          hugo-version: "latest"  # 使用最新版的 Hugo
+          hugo-version: "0.122.0"  # 使用最新版的 Hugo
           extended: true  # 使用扩展版 Hugo
 
       - name: Build  # 构建
         run: hugo --minify --gc  # 执行 Hugo 构建命令，启用压缩和垃圾收集
 
       - name: Deploy 🚀  # 部署
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:
           branch: gh-pages  # 部署到 gh-pages 分支
           folder: public  # 指定部署的目录
