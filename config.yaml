@@ -11,7 +11,7 @@ DefaultContentLanguage: zh-cn
 hasCJKLanguage: true
 theme: hugo-theme-stack
 paginate: 3  #到时候自己看着效果来
-title: Broos'sBlog
+title: Broos   # 没起作用啊
 # 页脚版权信息
 copyright: Broos
 
@@ -65,7 +65,7 @@ params:
 
     sidebar:
         emoji: 🍥
-        subtitle: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        subtitle: 悲观者永远正确，乐观者永远前行！
         avatar:
             enabled: true
             local: true
@@ -78,84 +78,28 @@ params:
         license:
             enabled: true
             default: Licensed under CC BY-NC-SA 4.0
-
+# 评论设置--------------（差一个评论管理注册）
     comments:
         enabled: true
-        provider: disqus
-
-        disqusjs:
-            shortname:
-            apiUrl:
-            apiKey:
-            admin:
-            adminLabel:
-
-        utterances:
-            repo:
-            issueTerm: pathname
-            label:
-
-        remark42:
-            host:
-            site:
-            locale:
-
-        vssue:
-            platform:
-            owner:
-            repo:
-            clientId:
-            clientSecret:
-            autoCreateIssue: false
+        provider: waline
 
         # Waline client configuration see: https://waline.js.org/en/reference/component.html
         waline:
-            serverURL:
-            lang:
-            pageview:
+            serverURL: https://hk-bruc1-github-io.vercel.app/
+            lang: zh-CN
+            pageview: true  # 网站的浏览量功能
             emoji:
-                - https://unpkg.com/@waline/emojis@1.0.1/weibo
+                - https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tieba
+                - https://cdn.jsdelivr.net/gh/walinejs/emojis/qq
+                - https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/alus
             requiredMeta:
                 - name
                 - email
                 - url
             locale:
                 admin: Admin
-                placeholder:
-
-        twikoo:
-            envId:
-            region:
-            path:
-            lang:
-
-        # See https://cactus.chat/docs/reference/web-client/#configuration for description of the various options
-        cactus:
-            defaultHomeserverUrl: "https://matrix.cactus.chat:8448"
-            serverName: "cactus.chat"
-            siteName: "" # You must insert a unique identifier here matching the one you registered (See https://cactus.chat/docs/getting-started/quick-start/#register-your-site)
-
-        giscus:
-            repo:
-            repoID:
-            category:
-            categoryID:
-            mapping:
-            lightTheme:
-            darkTheme:
-            reactionsEnabled: 1
-            emitMetadata: 0
-
-        gitalk:
-            owner:
-            admin:
-            repo:
-            clientID:
-            clientSecret:
-
-        cusdis:
-            host:
-            id:
+                placeholder: 说点什么吧！
+# 首页插件         
     widgets:
         homepage:
             - type: search
