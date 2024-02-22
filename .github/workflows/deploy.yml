@@ -50,52 +50,52 @@
           
           
           
-name: Deploy to Github Pages # 工作流的名称
+name: Deploy to Github Pages
 
-on: # 触发条件
-  push: # 当有push操作时触发
-    branches: [main] # 只针对master分支
-  pull_request: # 当有pull request操作时触发
-    branches: [main] # 只针对master分支
+on:
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
 
 jobs:
-  build: # 构建任务
-    runs-on: ubuntu-latest # 运行环境，最新的Ubuntu虚拟机
+    build:
+        runs-on: ubuntu-latest
 
-    permissions:
-      contents: write # 给默认的GITHUB_TOKEN写权限，以便提交和推送添加或更改的文件到仓库。
+        permissions:
+            # Give the default GITHUB_TOKEN write permission to commit and push the
+            # added or changed files to the repository.
+            contents: write
 
-    steps:
-      - uses: actions/checkout@v4.1.1 # 检出代码
-      - uses: actions/cache@v4.0.0
-        with:
-            path: /home/runner/.cache/hugo_cache    # Linux系统的Hugo模块缓存路径
-            key: ${{ runner.os }}-hugomod-${{ hashFiles('**/go.sum') }}
-            restore-keys: |
-                ${{ runner.os }}-hugomod-
+        steps:
+            - uses: actions/checkout@v3
 
-      - uses:  actions/setup-go@v5 # 安装Go语言环境
-        with:
-            go-version:  '1.21.6'
-            check-latest: false #保持与本地相同的配置
-      - run: go version # 显示Go版本以验证安装
+            - name: Cache Hugo resources
+              uses: actions/cache@v3
+              env:
+                  cache-name: cache-hugo-resources
+              with:
+                  path: resources
+                  key: ${{ env.cache-name }}
 
-      - name: Clean public directory # 新增：清理public目录的步骤
-        run: rm -rf public
+            - uses: actions/setup-go@v4
+              with:
+                  go-version: "^1.17.0"
+            - run: go version
 
-      - name: Setup Hugo # 安装Hugo
-        uses: peaceiris/actions-hugo@v2.6.0
-        with:
-            hugo-version: '0.122.0' # 最新版hugo支持go的1.21.6
-            extended: true # 使用扩展版Hugo
+            - name: Setup Hugo
+              uses: peaceiris/actions-hugo@v2
+              with:
+                  hugo-version: "latest"
+                  extended: true
 
-      - name: Build # 构建网站
-        run: hugo --minify --gc # 执行Hugo构建命令，启用压缩和垃圾收集
+            - name: Build
+              run: hugo --minify --gc
 
-      - name: Deploy 🚀 # 部署到GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
-        with:
-            branch: gh-pages # 部署到gh-pages分支
-            folder: public # 指定部署的目录
-            clean: true # 清理部署分支，只保留最新的提交
-            single-commit: true # 部署时只创建一个提交
+            - name: Deploy 🚀
+              uses: JamesIves/github-pages-deploy-action@v4
+              with:
+                  branch: gh-pages
+                  folder: public
+                  clean: true
+                  single-commit: true
