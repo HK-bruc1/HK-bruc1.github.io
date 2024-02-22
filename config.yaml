@@ -15,35 +15,11 @@ title: Broos   # 没起作用啊
 # 页脚版权信息
 copyright: Broos
 
-languages:
-    en:
-        languageName: English
-        title: Example Site
-        weight: 1
-        params:
-            description: Example description
-    zh-cn:
-        languageName: 中文
-        title: 演示站点
-        weight: 2
-        params:
-            description: 演示说明
-    ar:
-        languageName: عربي
-        languagedirection: rtl
-        title: موقع تجريبي
-        weight: 3
-        params:
-            description: وصف تجريبي
-
-# Change it to your Disqus shortname before using
-disqusShortname: hugo-theme-stack
-
 # GA Tracking ID
 googleAnalytics:
 
 
-
+# 用于SEO
 permalinks:
     post: /p/:slug/
     page: /:slug/
@@ -53,11 +29,11 @@ params:
         - post
     featuredImageField: image
     rssFullContent: true
-    favicon:  # e.g.: favicon placed in `static/favicon.ico` of your site folder, then set this field to `/favicon.ico` (`/` is necessary)
+    favicon: /favicon.png # e.g.: favicon placed in `static/favicon.ico` of your site folder, then set this field to `/favicon.ico` (`/` is necessary)
 
     footer:
-        since: 2020
-        customText:
+        since: 2024
+        customText: 这是页脚文本
 
     dateFormat:
         published: Jan 02, 2006

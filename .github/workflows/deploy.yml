@@ -14,7 +14,11 @@ jobs:
       contents: write # 给默认的GITHUB_TOKEN写权限，以便提交和推送添加或更改的文件到仓库。
 
     steps:
-      - uses: actions/checkout@v4.1.1 # 检出代码
+      # - uses: actions/checkout@v4.1.1 # 检出代码新版不可用
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
       - uses: actions/cache@v4.0.0
         with:
             path: /home/runner/.cache/hugo_cache    # Linux系统的Hugo模块缓存路径
