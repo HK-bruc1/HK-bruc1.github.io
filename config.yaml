@@ -1,6 +1,6 @@
 # 这是示例站点下的模板配置，用于覆盖
-
-baseurl: https://example.com
+# 部署到CF后每一次部署，url会变？
+baseurl: https://hk-bruc1-github-io.pages.dev
 languageCode: zh-cn
 # Theme i18n support
 # Available values: ar, bn, ca, de, el, en, es, fr, hu, id, it, ja, ko, nl, pt-br, th, uk, zh-cn, zh-hk, zh-tw
@@ -10,12 +10,13 @@ DefaultContentLanguage: zh-cn
 # This will make .Summary and .WordCount behave correctly for CJK languages.
 hasCJKLanguage: true
 theme: hugo-theme-stack
-paginate: 3  #到时候自己看着效果来
-title: Broos   # 没起作用啊
+paginate: 5  #一个页面显示的文章数
+title: Broos 
 # 页脚版权信息
 copyright: Broos
 
 # GA Tracking ID
+# CF自带web分析功能了。。。。
 googleAnalytics:
 
 
@@ -33,14 +34,14 @@ params:
 
     footer:
         since: 2024
-        customText: 这是页脚文本
+        customText: 
 
     dateFormat:
-        published: Jan 02, 2006
-        lastUpdated: Jan 02, 2006 15:04 MST
+        published: "2006年1月02日"
+        lastUpdated:  "2006年1月02日 15:04 MST"
 
     sidebar:
-        emoji: 🍥
+        emoji: 
         subtitle: 悲观者永远正确，乐观者永远前行！
         avatar:
             enabled: true
@@ -54,6 +55,7 @@ params:
         license:
             enabled: true
             default: Licensed under CC BY-NC-SA 4.0
+            
 # 评论设置--------------（差一个评论管理注册）
     comments:
         enabled: true
@@ -71,9 +73,8 @@ params:
             requiredMeta:
                 - name
                 - email
-                - url
             locale:
-                admin: Admin
+                admin: 站长
                 placeholder: 说点什么吧！
 # 首页插件         
     widgets:
@@ -90,28 +91,30 @@ params:
                   limit: 10
         page:
             - type: toc
-
+            
+# 不知道怎么使用
     opengraph:
         twitter:
             # Your Twitter username
             site:
-
             # Available values: summary, summary_large_image
             card: summary_large_image
-
+            
+# 默认图(不是文章的默认图片)
     defaultImage:
         opengraph:
-            enabled: false
-            local: false
-            src:
-
+            enabled: true
+            local: true
+            src: img/avatar.png
+            
+# 主题颜色
     colorScheme:
         # Display toggle
         toggle: true
-
         # Available values: auto, light, dark
         default: auto
 
+# 图像处理
     imageProcessing:
         cover:
             enabled: true
@@ -122,21 +125,21 @@ params:
 ### See https://docs.stack.jimmycai.com/configuration/custom-menu.html
 ### To remove about, archive and search page menu item, remove `menu` field from their FrontMatter
 menu:
-    main: []
+    # # 只有社交图标，菜单去页面前言添加 没什么用
+    # social:
+        # - identifier: github
+          # name: GitHub
+          # url: https://github.com/HK-bruc1/HK-bruc1.github.io
+          # params:
+              # icon: brand-github
 
-    social:
-        - identifier: github
-          name: GitHub
-          url: https://github.com/CaiJimmy/hugo-theme-stack
-          params:
-              icon: brand-github
-
-        - identifier: twitter
-          name: Twitter
-          url: https://twitter.com
-          params:
-              icon: brand-twitter
-
+        # - identifier: twitter
+          # name: Twitter
+          # url: https://twitter.com
+          # params:
+              # icon: brand-twitter
+              
+# 相关文章设置
 related:
     includeNewer: true
     threshold: 60
@@ -148,20 +151,34 @@ related:
         - name: categories
           weight: 200
 
+# 高亮设置
 markup:
     goldmark:
         renderer:
-            ## Set to true if you have HTML content inside Markdown
+            ## 如果 Markdown 中包含 HTML 内容，请设置为 true
             unsafe: true
     tableOfContents:
         endLevel: 4
         ordered: true
         startLevel: 2
     highlight:
+        ## 是否在语法高亮的代码块中添加类，默认为 false
         noClasses: false
+        
+         ## 是否启用代码块的代码标记，默认为 true
         codeFences: true
+        
+        ## 是否猜测代码块的语法，默认为 true
         guessSyntax: true
+        
+        ## 代码行号的起始值，默认为 1
         lineNoStart: 1
+        
+         ## 是否显示代码块的行号，默认为 true
         lineNos: true
+        
+        ## 是否在表格中显示代码行号，默认为 true
         lineNumbersInTable: true
+        
+        ## 指定制表符的宽度，默认为 4
         tabWidth: 4
