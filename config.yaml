@@ -63,7 +63,7 @@ params:
 
         # Waline client configuration see: https://waline.js.org/en/reference/component.html
         waline:
-            serverURL: https://hk-bruc1-github-io.vercel.app/
+            serverURL: https://hugo-comment-by-waline-4z6ikduz0-bruces-projects-5f023f7b.vercel.app/
             lang: zh-CN
             pageview: true  # 网站的浏览量功能
             emoji:
