@@ -9,6 +9,7 @@ DefaultContentLanguage: zh-cn
 # Set hasCJKLanguage to true if DefaultContentLanguage is in [zh-cn ja ko]
 # This will make .Summary and .WordCount behave correctly for CJK languages.
 hasCJKLanguage: true
+buildDrafts: false # 草稿不会被发布
 theme: hugo-theme-stack
 paginate: 5  #一个页面显示的文章数
 title: Broos 
@@ -38,7 +39,7 @@ params:
 
     dateFormat:
         published: "2006年1月02日"
-        lastUpdated:  "2006年1月02日 15:04 MST"
+        lastUpdated:  "2006年1月02日"
 
     sidebar:
         emoji: 
@@ -73,6 +74,7 @@ params:
             requiredMeta:
                 - name
                 - email
+                - url
             locale:
                 admin: 站长
                 placeholder: 说点什么吧！
