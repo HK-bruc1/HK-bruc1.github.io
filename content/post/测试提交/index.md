@@ -1,7 +1,7 @@
 ---
-title: "测试提交"
+title: 测试提交
 date: 2024-02-24T10:57:53+08:00
-draft: true
+draft: false
 image: cover.jpg
 description: 这是标题下面
 keywords: 关键词优化SEO
