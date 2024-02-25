@@ -9,7 +9,6 @@ tags:
 categories:
   - hugo
 weight: 
-lastmod: 2024-02-24
 description: 记录收集到的hugo写作方法
 ---
 
@@ -26,3 +25,4 @@ description: 记录收集到的hugo写作方法
 start chrome http://localhost:1313/ & hugo server -D --source F:\privateData\my_yugo
 ```
 关闭本地浏览后有一个小bug，只能结束运行端口，不能关闭浏览器中的标签页。
+测试最后修改日期
