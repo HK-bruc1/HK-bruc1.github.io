@@ -184,3 +184,14 @@ markup:
         
         ## 指定制表符的宽度，默认为 4
         tabWidth: 4
+
+# 自动更新最后修改时间 在文章中设置一个lastmod字段添加一个时间即可
+enableGitInfo: true
+frontmatter:
+  lastmod:
+    - :git
+    - :fileModTime
+    - lastmod
+    - :defalut
+
+
