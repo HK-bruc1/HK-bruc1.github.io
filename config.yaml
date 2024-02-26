@@ -11,7 +11,7 @@ DefaultContentLanguage: zh-cn
 hasCJKLanguage: true
 buildDrafts: false # 草稿不会被发布
 theme: hugo-theme-stack
-paginate: 5  #一个页面显示的文章数
+paginate: 6  #一个页面显示的文章数
 title: Broos 
 # 页脚版权信息
 copyright: Broos

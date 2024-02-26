@@ -126,7 +126,6 @@
         flex-wrap: wrap;
     }
 }
-
 .article-category,
 .article-tags {
     display: flex;
@@ -278,4 +277,11 @@
 .article-content p {
     text-indent: 2em;
 }
+//调整移动端代码字体大小
+code {
+    border-radius: var(--tag-border-radius);
+    font-size: 14px; // Add font size setting for code block
+    font-family: var(--code-font-family);
+}
+
 
