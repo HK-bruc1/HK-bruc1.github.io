@@ -15,7 +15,7 @@ footer.site-footer {
     .copyright {
         color: var(--accent-color);
         font-weight: bold;
-        margin-bottom: 5px;
+        margin-bottom: 1px;
     }
 
     .powerby {
@@ -28,3 +28,21 @@ footer.site-footer {
         }
     }
 }
+
+.running-time {
+    color: var(--card-text-color-secondary);
+    font-weight: normal;
+
+    .running-days {
+        font-weight:bold;
+        color: var(--accent-color); //复制于版权信息的颜色，使风格一致
+    }   
+}
+
+.totalcount {
+    color: var(--card-text-color-secondary);
+    font-weight: normal;
+    margin-bottom: 5px;
+    }
+
+
