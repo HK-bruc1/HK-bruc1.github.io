@@ -22,8 +22,15 @@
     💻 {{ len (where .Site.RegularPages "Section" "post") }} 篇文章 · 
     📔 {{ div ($scratch.Get "total") 1000.0 | lang.FormatNumber 2 }}k 字
     </section>
-
-    
+	
+	<section class="my-stats">
+	<!-- Add busuanzi不蒜子 count -->
+	<!-- js脚本放在layouts/partials/head/script.html -->
+    <span id="busuanzi_container_site_pv" style='display:none'> 本站总访问量 <span id="busuanzi_value_site_pv" class="pv"></span> 次 </span>·
+    <span id="busuanzi_container_site_uv" style='display:none'> 总访客数 <span id="busuanzi_value_site_uv" class="uv"></span> 人</span>
+	</section>
+	
+	
     <section class="powerby">
         {{ with .Site.Params.footer.customText }}
             {{ . | safeHTML }} <br/>
@@ -37,3 +44,4 @@
         {{ T "footer.designedBy" (dict "Theme" $Theme "DesignedBy" $DesignedBy) | safeHTML }}
     </section>
 </footer>
+

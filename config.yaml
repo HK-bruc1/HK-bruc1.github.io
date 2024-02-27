@@ -27,6 +27,12 @@ permalinks:
     page: /:slug/
 
 params:
+    #访问量统计
+    busuanzi:
+        enabled: true
+        site_offset: 0
+        visitor_offset: 0
+        
     mainSections:
         - post
     featuredImageField: image
@@ -35,7 +41,7 @@ params:
 
     footer:
         since: 2024
-        customText: 
+        customText: You have the power to shape your own destiny
 
     dateFormat:
         published: "2006年1月02日"
@@ -193,5 +199,6 @@ frontmatter:
     - :fileModTime
     - lastmod
     - :defalut
+
 
 

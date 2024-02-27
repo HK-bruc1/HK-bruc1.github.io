@@ -157,12 +157,8 @@
         color: var(--accent-color);
         font-weight: 700;
 
-        .icon-tabler-toggle-left {
+        .icon-tabler-toggle-moon {
             display: none;
-        }
-
-        .icon-tabler-toggle-right {
-            display: unset;
         }
     }
 }
@@ -175,9 +171,9 @@
     cursor: pointer;
     gap: var(--menu-icon-separation);
 
-    .icon-tabler-toggle-right {
-        display: none;
-    }
+    .icon-tabler-toggle-moon {
+            display: none;
+        }
 }
 
 #i18n-switch {

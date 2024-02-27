@@ -30,7 +30,7 @@ footer.site-footer {
 }
 
 .running-time {
-    color: var(--card-text-color-secondary);
+    color: var(--card-text-color-secondary);//运行时间的文本颜色
     font-weight: normal;
 
     .running-days {
@@ -39,10 +39,27 @@ footer.site-footer {
     }   
 }
 
+//字数统计
 .totalcount {
-    color: var(--card-text-color-secondary);
+    color: var(--card-text-color-main); //跟文本一样的黑色，夜间模式下也跟着变色
     font-weight: normal;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
     }
+
+
+//访问统计样式
+.my-stats {
+  color: var(--card-text-color-secondary);//文本的颜色
+  font-weight: normal;
+  .pv {
+    font-weight: bold;
+    color: var(--card-text-color-main) ;// 访问数量的颜色
+  }
+  .uv {
+    font-weight: bold;
+    color: var(--card-text-color-main);// 访问人数的颜色
+  }
+}
+
 
 
