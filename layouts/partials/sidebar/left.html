@@ -90,9 +90,8 @@
             
             {{ if (default false .Site.Params.colorScheme.toggle) }}
                 <li id="dark-mode-toggle">
-                    {{ partial "helper/icon" "toggle-left" }}
-                    {{ partial "helper/icon" "toggle-right" }}
-                    <span>{{ T "darkMode" }}</span>
+                    {{ partial "helper/icon" "toggle-moon" }}
+                    <span>夜间</span>
                 </li>
             {{ end }}
         </div>
