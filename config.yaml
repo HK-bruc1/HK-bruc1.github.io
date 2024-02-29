@@ -41,7 +41,7 @@ params:
 
     footer:
         since: 2024
-        customText: You have the power to shape your own destiny
+        customText: You have the power to shape your own destiny.
 
     dateFormat:
         published: "2006年1月02日"
@@ -165,6 +165,7 @@ markup:
         renderer:
             ## 如果 Markdown 中包含 HTML 内容，请设置为 true
             unsafe: true
+            hardWraps: true # 取消md严格换行。跟行首缩进配合刚刚好，我换行文本也换行
     tableOfContents:
         endLevel: 4
         ordered: true

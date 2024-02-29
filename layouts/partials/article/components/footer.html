@@ -7,7 +7,9 @@
         <span>{{ default .Site.Params.article.license.default .Params.license | markdownify }}</span>
     </section>
     {{ end }}
-
+	
+	
+	<!-- 放到layouts/partials/article/components/details.html中去
     {{- if ne .Lastmod .Date -}}
     <section class="article-lastmod">
         {{ partial "helper/icon" "clock" }}
@@ -15,5 +17,6 @@
             {{ T "article.lastUpdatedOn" }} {{ .Lastmod.Format ( or .Site.Params.dateFormat.lastUpdated "Jan 02, 2006 15:04 MST" ) }}
         </span>
     </section>
-    {{- end -}}
+    {{- end -}}   -->
+	
 </footer>
