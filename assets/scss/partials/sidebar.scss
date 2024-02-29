@@ -8,7 +8,9 @@
 
 .left-sidebar {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* 保持垂直布局 */
+	justify-content: center; /* 水平居中子元素 */
+	align-items: center; /* 可选地，垂直居中元素 */
     flex-shrink: 0;
     align-self: stretch;
     gap: var(--sidebar-element-separation);
@@ -54,7 +56,6 @@
 
             .site-name {
                 font-size: 1.4rem;
-
                 @include respond(2xl) {
                     font-size: 1.75rem;
                 }
@@ -66,6 +67,7 @@
         }
     }
 }
+
 
 .right-sidebar {
     width: 100%;
@@ -84,6 +86,10 @@
 }
 
 .sidebar header {
+	display: flex;
+	flex-direction: column; /* 保持垂直布局 */
+	justify-content: center; /* 水平居中子元素 */
+	align-items: center; /* 可选地，垂直居中元素 */
     z-index: 1;
     transition: box-shadow 0.5s ease;
     display: flex;
@@ -131,6 +137,10 @@
     }
 
     .site-name {
+		display: flex;
+		flex-direction: column; /* 保持垂直布局 */
+		justify-content: center; /* 水平居中子元素 */
+		align-items: center; /* 可选地，垂直居中元素 */
         color: var(--accent-color);
         margin: 0;
         font-size: 1.6rem;
