@@ -12,6 +12,9 @@ categories:
 weight:
 ---
 
+## 装修计划
+- [ ] 代码块部分的高亮与背景以及代码行数不对齐问题
+- [ ] 评论系统要整一个只需要一个昵称就可以的
 ## 2024.02.23
 ### 添加waline评论系统
 **参考文章：**
@@ -145,7 +148,7 @@ hugo mod clean --all && hugo --cleanDestinationDir
     </footer>
 ```
 标签由article-lastmod改为article-update，把代码形式修改成跟这几个部件一样即可应用他们相同的部件。
-## 左侧边栏元素居中
+### 左侧边栏元素居中
 样式在assets\scss\partials\sidebar.scss,在三个位置添加相同的配置，因为不太熟悉，也不敢乱作简化。
 第一个位置：
 ```
@@ -253,3 +256,17 @@ hugo mod clean --all && hugo --cleanDestinationDir
 }
 ```
 实现效果就是菜单居中，头像和站点名称居中了。
+## 2024.03.02
+### 代码块引入MacOS窗口样式
+[参考文章](https://blog.linsnow.cn/p/modify-hugo/#%E4%BB%A3%E7%A0%81%E5%9D%97%E5%BC%95%E5%85%A5macos%E7%AA%97%E5%8F%A3%E6%A0%B7%E5%BC%8F)
+由于我的assets文件夹img文件夹但是我按照教程来发现不起作用。可能的原因为（回答来自Gemini）：
+ webpack 处理 assets 文件夹中的文件的方式与处理 static 文件夹中的文件的方式不同:
+- **assets 文件夹:** webpack 会将 assets 文件夹中的文件打包到最终的 bundle 文件中，需要使用 `require()` 或 `import()` 语句来引入。
+- **static 文件夹:** webpack **不会** 处理 static 文件夹中的文件，会被直接复制到最终的输出目录中，可以直接在 HTML 代码中引用。
+- assets 文件夹中的文件通常会被浏览器缓存，可能会导致更新文件后不立即显示更改。
+### 加载进度条
+[参考](https://yelleis.top/p/61fdb627/#%E5%8A%A0%E8%BD%BD%E8%BF%9B%E5%BA%A6%E6%9D%A1)
+东西加多了是会有一点慢，考虑加一个不太显眼的加载条。
+### 添加背景的蛛网特效
+[参考](https://ponder.lol/2023/custom-hugo-theme-stack/#%E6%B7%BB%E5%8A%A0%E8%83%8C%E6%99%AF%E7%9A%84%E8%9B%9B%E7%BD%91%E7%89%B9%E6%95%88)
+暂时看来两者好像都不怎么慢，如果以后慢的话可以选者嵌入代码方式而不是使用外部脚本。

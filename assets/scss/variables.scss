@@ -130,9 +130,9 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
 
     --pre-background-color: #272822;
     --pre-text-color: #f8f8f2;
-	// 行内代码背景色
+	
     --code-background-color: rgba(0, 0, 0, 0.12);
-	// 行内代码前景色
+
     --code-text-color: #808080;
 
     --table-border-color: #dadada;
@@ -165,7 +165,7 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
 
 [data-scheme="light"] {
     --pre-text-color: #272822;
-    --pre-background-color: #fafafa;
+    --pre-background-color: #fafafa;//代码块外围颜色
     @import "partials/highlight/light.scss";
 }
 
@@ -180,3 +180,4 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
     --container-padding: 15px;
     --widget-separation: var(--section-separation);
 }
+
