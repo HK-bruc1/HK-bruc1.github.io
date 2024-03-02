@@ -196,8 +196,8 @@ markup:
 enableGitInfo: true
 frontmatter:
   lastmod:
-    - :git
     - :fileModTime
+    - :git
     - lastmod
     - :defalut
 
