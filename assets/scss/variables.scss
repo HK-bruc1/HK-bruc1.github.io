@@ -7,34 +7,32 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
 *   Global style
 */
 :root {
-    // 全局顶部边距
+    // 设置所有页面最上面的部件距离网页顶部的间隙长度为 30px
     --main-top-padding: 30px;
 
     @include respond(xl) {
-        // 大屏幕响应时主要顶部填充增加
-        --main-top-padding: 50px;
+        // 网页最上面的部件距离网页顶部的间隙长度（大屏幕设备时）
+        --main-top-padding: 40px;
     }
 
-    // 页面背景颜色
+    // 整个网页背景颜色
     --body-background: #EAEAEA;
 
-    // 强调色和其深色变体
-    --accent-color: #34495e;
+    // 强调色和其深色变体（主要体现在主页左侧菜单栏，定位在那个页面时的颜色，页脚部分也有）
+    --accent-color: #000;
     --accent-color-darker: #2c3e50;
-
-    // 强调色文本颜色和页面文本颜色
-    --accent-color-text: #fff;
-    --body-text-color: #707070;
+    --accent-color-text: #fff;//没用，会被accent-color覆盖
+    --body-text-color: #707070;//页面组件文字颜色（包括正文、标题、链接等）
 
     // 标签和分类的边框半径
     --tag-border-radius: 8px;
 
-    // 页面区块间隔
+    // 调整文章之间的间隙
     --section-separation: 40px;
 
     // 滚动条样式
-    --scrollbar-thumb: hsl(0, 0%, 85%);
-    --scrollbar-track: var(--body-background);
+    --scrollbar-thumb: hsl(0, 0%, 85%);//定义滚动条滑块的颜色
+    --scrollbar-track: var(--body-background);//定义滚动条轨道的颜色
 	
 
     // 暗色模式下的样式设置
@@ -51,13 +49,26 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
 
 
 /**
-*   Global font family
+*   Global font family 全局字体系列
 */
 :root {
+	/**
+	* 系统字体系列
+	*/
     --sys-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Droid Sans", "Helvetica Neue";
+	/**
+	* 中文字体系列
+	*/
     --zh-font-family: "PingFang SC", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei";
-
-    --base-font-family: "Lato", var(--sys-font-family), var(--zh-font-family), sans-serif;
+	/**
+	* 基础字体系列
+	* 使用系统字体系列作为基础，并添加中文字体系列和 sans-serif 作为备用
+	*/
+    --base-font-family: "LXGW WenKai Screen", "Lato", var(--sys-font-family), var(--zh-font-family), sans-serif;
+	/**
+	* 代码字体系列
+	* 使用 Menlo 作为首选，并添加 Monaco、Consolas、"Courier New" 和中文字体系列作为备用
+	*/
     --code-font-family: Menlo, Monaco, Consolas, "Courier New", var(--zh-font-family), monospace;
 }
 
@@ -130,9 +141,9 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
 
     --pre-background-color: #272822;
     --pre-text-color: #f8f8f2;
-	
+	// 行内代码背景色（在custom.scss进行覆盖）
     --code-background-color: rgba(0, 0, 0, 0.12);
-
+	// 行内代码前景色
     --code-text-color: #808080;
 
     --table-border-color: #dadada;
