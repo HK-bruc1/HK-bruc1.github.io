@@ -29,9 +29,9 @@ lastmod: 2024-03-05
 **参考文章：**
 [hugo中文文档](https://hugo.opendocs.io/getting-started/configuration/#configure-dates)
 直接在front Matter中设置lastmod字段即可（但是不会自动修改，每次改动需要手动修改一下）
-**自动修改方案：**
-~~在站点配置文件config中，添加以下代码即可：~~ **会导致bug：所有文件的最后修改时间会变成最近一次提交时间。解决方案：不用git方案，其他保留。**
-```
+~~**自动修改方案：**~~ **本地显示正常但是用Cloudflare部署时会把所有文件的最后修改时间变成最近一次提交时间。**
+在站点配置文件config中，添加以下代码即可： 
+```yaml
 # 自动更新最后修改时间 
 # enableGitInfo: true # 从git文件中获取相关信息
 frontmatter:
@@ -68,7 +68,7 @@ frontmatter:
 [行首缩进](https://www.syfly007.com/post/CS/site/hugo%E7%BD%91%E7%AB%99%E6%90%AD%E5%BB%BA.html#%E8%A1%8C%E9%A6%96%E7%BC%A9%E8%BF%9B)
 使段落（需要空一行才会识别为新段落）行首自动缩进2个空格(针对我的stack主题我的路径为\themes\hugo-theme-stack\assets\scss\partials，避免主题更新的问题文件我复制一份出来用于覆盖了)
 修改相关scss文件，增加段落样式
-```
+```scss
 .article-content p {
     text-indent: 2em;
 }
@@ -81,20 +81,20 @@ frontmatter:
 ### 修改标签和分类框的样式和页面底色
 **相关参数在scss文件中有,直接修改即可。**
 修改文件夹中此文件 /themes/hugo-theme-stack/assets/scss/variables.scss`
-```
+```scss
 --tag-border-radius: 18px;  #Change from 4px to make it round corner
 --body-background:#F9F5F6; #背景改为自己喜欢的颜色
 ```
 修改后如果出现个别页面颜色没有转变，可以清除一下缓存再重新加载一下hugo项目
-```
+```go
 hugo mod clean --all && hugo --cleanDestinationDir
 ```
 ### “博客已运行x天x小时x分钟”字样
 [参考文章](https://thirdshire.com/hugo-stack-renovation/#%E5%8D%9A%E5%AE%A2%E5%B7%B2%E8%BF%90%E8%A1%8Cx%E5%A4%A9x%E5%B0%8F%E6%97%B6x%E5%88%86%E9%92%9F%E5%AD%97%E6%A0%B7)
 ### 总字数统计：“发表了x篇文章，共计x字”
 [参考](https://thirdshire.com/hugo-stack-renovation/#%E5%8D%9A%E5%AE%A2%E5%B7%B2%E8%BF%90%E8%A1%8Cx%E5%A4%A9x%E5%B0%8F%E6%97%B6x%E5%88%86%E9%92%9F%E5%AD%97%E6%A0%B7)
-加了两个部件之后，发现版权信息和这两个部件间隔有一点远，可以调整为：
-```
+加了两个部件之后，发现版权信息和这两个部件间隔有一点远，在同一文件中可以调整为：
+```scss
 .copyright {
         color: var(--accent-color);
         font-weight: bold;
@@ -112,7 +112,7 @@ hugo mod clean --all && hugo --cleanDestinationDir
 文章页面底部的布局位于 `{{ partial "article/components/footer" . }}` 在这个html文件中。直接把lastmod相关代码截取放到layouts/partials/article/components/details.html文章创建时间的后面。
 由于相关标签定义了css样式（assets\scss\partials\layout\article.scss的.article-lastmod中），导致跟其他部件样式不一致，简单起见就是直接把定位的标签改掉。让默认布局覆盖。修改之后的代码为：
 
-```
+```html
 <footer class="article-time">
         {{ if $showDate }}
             <div>
@@ -153,7 +153,7 @@ hugo mod clean --all && hugo --cleanDestinationDir
 ### 左侧边栏元素居中
 样式在assets\scss\partials\sidebar.scss,在三个位置添加相同的配置，因为不太熟悉，也不敢乱作简化。
 第一个位置：
-```
+```scss
 .left-sidebar {
     display: flex;
     flex-direction: column; /* 保持垂直布局 */
@@ -179,7 +179,7 @@ hugo mod clean --all && hugo --cleanDestinationDir
     }
 ```
 第二个：
-```
+```scss
 .sidebar header {
 	display: flex;
 	flex-direction: column; /* 保持垂直布局 */
@@ -275,7 +275,7 @@ hugo mod clean --all && hugo --cleanDestinationDir
 ## 2024.03.04
 ### 字体样式的修改
 **参考文章：**
-[CDN使用LXGW WenKai Mono](https://shuilanjiao.gitee.io/p/2023/11/hugo-stack-lxgwwenkai/#cdn%E4%BD%BF%E7%94%A8lxgw-wenkai-mono)
+[使用LXGW WenKai Mono](https://shuilanjiao.gitee.io/p/2023/11/hugo-stack-lxgwwenkai/#%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8lxgw-wenkai)
 [字体样式修改](https://xrg.fj.cn/p/hugo-stack%E4%B8%BB%E9%A2%98%E6%9B%B4%E6%96%B0%E5%B0%8F%E8%AE%B0/#%E5%AD%97%E4%BD%93%E6%A0%B7%E5%BC%8F%E4%BF%AE%E6%94%B9)
 [hugo自定义全局字体](https://blog.gezi.men/p/hugo-custom-global-font/)
 [字体分包部署与使用](https://chinese-font.netlify.app/post/deploy_to_cdn/)
@@ -285,12 +285,12 @@ hugo mod clean --all && hugo --cleanDestinationDir
 如果希望全局应用字体自定义，则建议将自定义字体添加到 layouts/partials/head/custom.html 中。
 **由于中文网字计划的 CDN 被多个平台盗用，故未来将缩减提供公共 CDN 链接的相应流量，并且不再保证链接稳定性。所以各位开发者需要自行将字体部署至 CDN 中，为各位的网页加速**。我在[github](https://github.com/lxgw/LxgwWenKai/issues/24)（两个链接都使用了国内镜像）上看到了该字体已经被其他人上传到cdnjs了（有两个版本按需求选择即可）。一般来说，cdnjs上的字体文件都是由可靠的上传者上传的，并且cdnjs服务也是比较可靠的。因此，可以放心使用其他人上传的CDN链接。
 **我的步骤如下：** ~~复制github上提供的CDN链接~~，添加到主题目录\layouts\partials\head\custom.html中：
-```
+```html
 <!-- 引入霞鹜文楷字体 -->
 <link rel='stylesheet' href='https://cdn.staticfile.org/lxgw-wenkai-screen-webfont/1.6.0/style.css' /> 
 ```
 然后打开主题目录\assets\scss\variables.scss文件，找到:root并设置字体即可：
-```
+```scss
 /**
 *   Global font family 全局字体系列
 */
@@ -317,3 +317,179 @@ hugo mod clean --all && hugo --cleanDestinationDir
 ```
 原来字体的配置可以保留，以防cdn链接失效导致渲染错误。配置保存后结束本地服务器重启项目即可。**最后还是用上了中文网字计划的cdn因为他的版本字体细一点，那个Screen版有一点粗不好看。**
 ## 2024.03.05
+### 代码高亮样式
+在官方文档中有默认配配置：
+```yaml
+markup:
+  highlight:
+    anchorLineNos: false
+    codeFences: true
+    guessSyntax: false
+    hl_Lines: ""
+    lineAnchors: ""
+    lineNoStart: 1   #行从几开始
+    lineNos: false   #是否显示行列
+    lineNumbersInTable: true
+    noClasses: true
+    style: monokai   #代码样式
+    tabWidth: 4
+```
+样式风格有两个链接可以进入选择 [Short snippets 简短片段](https://xyproto.github.io/splash/docs/all.html)以及 [Long snippets 长片段](https://xyproto.github.io/splash/docs/longer/all.html)应该是对应不同需求来选择。格式选择之后重启一下服务器打开开发者工具看一下是什么颜色。去主题目录\assets\scss\variables.scss文件找到代码块部分根据高亮风格修改一下外围的颜色：
+```scss
+/* 亮色主题下的代码块样式 */
+[data-scheme="light"] {
+    --pre-text-color: #272822;
+    --pre-background-color: #faf4ed; /* 代码块外围颜色，跟高亮风格一致即可。 */
+    @import "partials/highlight/light.scss"; /* 引入亮色主题的代码块样式 */
+}
+
+/* 暗色主题下的代码块样式 */
+[data-scheme="dark"] {
+    --pre-text-color: #f8f8f2;
+    --pre-background-color: #272822; /* 代码块背景颜色 ，跟高亮风格一致即可*/
+    @import "partials/highlight/dark.scss"; /* 引入暗色主题的代码块样式 */
+}
+```
+### 目录项紧凑
+**参考文章：**
+[目录项紧凑](https://xrg.fj.cn/p/hugo-stack%E4%B8%BB%E9%A2%98%E6%9B%B4%E6%96%B0%E5%B0%8F%E8%AE%B0/#%E7%9B%AE%E5%BD%95%E9%A1%B9%E7%B4%A7%E5%87%91)
+由于主题目录项不满意的地方只有高度和目录项之间的距离所以改动的地方没有参考文章那么多。之改动：`#TableOfContents` 选择器底下的属性：
+```scss
+max-height: 75vh;  // 控制目录的最大高度（没改动）
+li {
+            margin: 10px 10px; //目录项之间的距离（只改动间隙）
+            padding: 5px;
+
+            & > ol,
+            & > ul {
+                margin-top: 10px;
+                padding-left: 10px;
+                margin-bottom: -5px;
+
+                & > li:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+```
+### 返回顶部按钮
+参考文章：[返回顶部](https://yelleis.top/p/61fdb627/#%E8%BF%94%E5%9B%9E%E9%A1%B6%E9%83%A8)
+将代码添加到 `/layouts/partials/footer/custom.html` 文件和 `/themes/hugo-theme-stack/layouts/partials/footer/components/script.html` 文件的区别如下：
+`/layouts/partials/footer/custom.html` 文件中的代码会在所有页面的底部渲染。
+`/layouts/partials/footer/components/script.html` 文件中的代码只会显示在包含 `{{ partial "footer/components/script" }}` 代码的页面底部。
+代码如下：
+
+```html
+<!--返回顶部按钮 -->
+<a href="#" id="back-to-top" title="返回顶部"></a>
+<!--返回顶部CSS -->
+<style>
+  #back-to-top {
+    display: none; /* 默认隐藏 */
+    position: fixed;/* 固定定位 */
+    bottom: 20px; /* 距离底部 20 像素 */
+    right: 55px;/* 距离右侧 55 像素 */
+    width: 55px;/* 宽度 55 像素 */
+    height: 55px;/* 高度 55 像素 */
+    border-radius: 7px; /* 圆角半径 7 像素 */
+    background-color: rgba(234, 234, 234, 0.5); /* 按钮颜色 rgba(64, 158, 255, 0.5) */
+    box-shadow: var(--shadow-l2);/* 盒子阴影 var(--shadow-l2) */
+    font-size: 30px;/* 字体大小 30 像素 */
+    text-align: center;/* 文本居中 */
+    line-height: 50px;/* 行高 50 像素 */
+    cursor: pointer;/* 鼠标指针变为手型 */
+  }
+
+  #back-to-top:before {
+    content: ' ';/* 内容为空 */
+    display: inline-block;/* 显示方式为块级元素 */
+    position: relative;/* 相对定位 */
+    top: 0;/* 距离顶部 0 像素 */
+    transform: rotate(135deg);* 旋转 135 度 */
+    height: 10px;* 高度 10 像素 */
+    width: 10px;/* 宽度 10 像素 */
+    border-width: 0 0 2px 2px;/* 边框宽度：上 0 像素，右 0 像素，下 2 像素，左 2 像素 */
+    border-color: var(--back-to-top-color);/* 边框颜色 var(--back-to-top-color) */
+    border-style: solid; /* 边框样式为实线 */
+  }
+
+  #back-to-top:hover:before {
+    border-color: #2674e0; /* 边框颜色 #2674e0 */
+  }
+
+  /* 在屏幕宽度小于 768 像素时，钮位置调整 */
+  @media screen and (max-width: 768px) {
+    #back-to-top {
+      bottom: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      font-size: 10px;
+    }
+  }
+
+  /* 在屏幕宽度大于等于 1024 像素时，按钮位置调整 */
+  @media screen and (min-width: 1024px) {
+    #back-to-top {
+      bottom: 20px;
+      right: 40px;
+    }
+  }
+
+  /* 在屏幕宽度大于等于 1280 像素时，按钮位置调整 */
+  @media screen and (min-width: 1280px) {
+    #back-to-top {
+      bottom: 20px;
+      right: 55px;
+    }
+  }
+
+  /* 目录显示时，隐藏按钮 */
+  @media screen and (min-width: 1536px) {
+    #back-to-top {
+      visibility: hidden;
+    }
+  }
+</style>
+<!--返回顶部JS -->
+<script>
+    // 定义一个函数 backToTop，用于滚动页面到顶部
+    function backToTop() {
+        // 使用 scrollTo 方法将页面滚动到顶部，平滑效果取决于浏览器的默认行为
+        window.scrollTo(0, 0);
+    }
+
+    // 当页面加载完成时执行以下代码
+    window.onload = function() {
+        // 获取当前滚动的垂直位置（兼容不同浏览器的写法）
+        let scrollTop = this.document.documentElement.scrollTop || this.document.body.scrollTop;
+        // 获取 ID 为 'back-to-top' 的元素，通常是一个返回顶部按钮
+        let totopBtn = this.document.getElementById('back-to-top');
+        if (scrollTop > 0) {
+            // 如果页面滚动位置大于 0，则显示返回顶部按钮
+            totopBtn.style.display = 'inline';
+        } else {
+            // 否则隐藏返回顶部按钮
+            totopBtn.style.display = 'none';
+        }
+    }
+
+    // 当页面滚动时执行以下代码
+    window.onscroll = function() {
+        // 获取当前滚动的垂直位置（兼容不同浏览器的写法）
+        let scrollTop = this.document.documentElement.scrollTop || this.document.body.scrollTop;
+        // 获取 ID 为 'back-to-top' 的元素
+        let totopBtn = this.document.getElementById('back-to-top');
+        if (scrollTop < 200) {
+            // 如果滚动位置小于 200 像素，则隐藏返回顶部按钮
+            totopBtn.style.display = 'none';
+        } else {
+            // 否则显示返回顶部按钮，并为按钮添加点击事件，点击时执行 backToTop 函数
+            totopBtn.style.display = 'inline';
+            totopBtn.addEventListener('click', backToTop, false);
+        }
+    }
+</script>
+```
+
+

@@ -73,35 +73,48 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
 }
 
 /*
-*   Card style
+*   卡片样式
 */
 :root {
+    /* 卡片背景颜色 */
     --card-background: #fff;
+    /* 选中卡片的背景颜色 */
     --card-background-selected: #eaeaea;
 
+    /* 卡片主要文本颜色 */
     --card-text-color-main: #000;
+    /* 卡片次要文本颜色 */
     --card-text-color-secondary: #747474;
+    /* 卡片第三文本颜色 */
     --card-text-color-tertiary: #767676;
+    /* 卡片分隔线颜色 */
     --card-separator-color: rgba(218, 218, 218, 0.5);
 
+    /* 卡片边框半径 */
     --card-border-radius: 10px;
 
+    /* 卡片填充 */
     --card-padding: 20px;
 
+    /* 中等屏幕上的卡片填充 */
     @include respond(md) {
         --card-padding: 25px;
     }
 
+    /* 超大屏幕上的卡片填充 */
     @include respond(xl) {
         --card-padding: 30px;
     }
 
+    /* 小卡片填充 */
     --small-card-padding: 25px 20px;
 
+    /* 中等屏幕上的小卡片填充 */
     @include respond(md) {
         --small-card-padding: 25px;
     }
 
+    /* 暗模式下的卡片样式 */
     &[data-scheme="dark"] {
         --card-background: #424242;
         --card-background-selected: rgba(255, 255, 255, 0.16);
@@ -112,78 +125,107 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
     }
 }
 
+
 /**
-*   Article content font settings
+*   文章内容字体设置
 */
 :root {
+    /* 文章字体族 */
     --article-font-family: var(--base-font-family);
+    /* 文章字体大小 */
     --article-font-size: 1.6rem;
 
+    /* 中等屏幕上的文章字体大小 */
     @include respond(md) {
         --article-font-size: 1.7rem;
     }
 
+    /* 文章行高 */
     --article-line-height: 1.85;
 }
 
+
 /*
-*   Article content style
+*   文章内容样式
 */
 :root {
+    /* 引用块边框大小 */
     --blockquote-border-size: 4px;
+    /* 引用块背景颜色，没用 */
     --blockquote-background-color: rgb(248 248 248);
 
+    /* 标题边框大小 */
     --heading-border-size: 4px;
 
+    /* 链接背景颜色 */
     --link-background-color: 189, 195, 199;
+    /* 链接背景透明度 */
     --link-background-opacity: 0.5;
+    /* 链接背景悬停时的透明度 */
     --link-background-opacity-hover: 0.7;
 
+    /* 代码块背景颜色，没用 */
     --pre-background-color: #272822;
+    /* 代码块文本颜色 */
     --pre-text-color: #f8f8f2;
-	// 行内代码背景色（在custom.scss进行覆盖）
+    /* 代码背景颜色，没用 */
     --code-background-color: rgba(0, 0, 0, 0.12);
-	// 行内代码前景色
+    /* 代码文本颜色 */
     --code-text-color: #808080;
 
+    /* 表格边框颜色 */
     --table-border-color: #dadada;
+    /* 表格偶数行背景颜色 */
     --tr-even-background-color: #efefee;
 
+    /* 键盘标记边框颜色 */
     --kbd-border-color: #dadada;
 
+    /* 暗模式下的代码块背景颜色 */
     &[data-scheme="dark"] {
         --code-background-color: #272822;
+        /* 暗模式下的代码文本颜色 */
         --code-text-color: rgba(255, 255, 255, 0.9);
 
+        /* 暗模式下的表格边框颜色 */
         --table-border-color: #717171;
+        /* 暗模式下的表格偶数行背景颜色 */
         --tr-even-background-color: #545454;
 
+        /* 暗模式下的引用块背景颜色 */
         --blockquote-background-color: rgb(75 75 75);
     }
 }
 
+
 /*
-*   Shadow style
-*   Thanks to https://www.figma.com/community/plugin/744987207861965946/Shadow-picker
+*   阴影样式
+*   感谢 https://www.figma.com/community/plugin/744987207861965946/Shadow-picker
 */
 :root {
+    /* 阴影层1 */
     --shadow-l1: 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 0px 2px rgba(0, 0, 0, 0.06), 0px 0px 1px rgba(0, 0, 0, 0.04);
+    /* 阴影层2 */
     --shadow-l2: 0px 10px 20px rgba(0, 0, 0, 0.04), 0px 2px 6px rgba(0, 0, 0, 0.04), 0px 0px 1px rgba(0, 0, 0, 0.04);
+    /* 阴影层3 */
     --shadow-l3: 0px 10px 20px rgba(0, 0, 0, 0.04), 0px 2px 6px rgba(0, 0, 0, 0.04), 0px 0px 1px rgba(0, 0, 0, 0.04);
+    /* 阴影层4 */
     --shadow-l4: 0px 24px 32px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.04),
         0px 0px 1px rgba(0, 0, 0, 0.04);
 }
 
+/* 亮色主题下的代码块样式 */
 [data-scheme="light"] {
-    --pre-text-color: #272822;
-    --pre-background-color: #fafafa;//代码块外围颜色
-    @import "partials/highlight/light.scss";
+    --pre-text-color: #272822; //没用
+    --pre-background-color: #faf4ed; /* 代码块外围颜色，跟高亮风格一致即可。 */
+    @import "partials/highlight/light.scss"; /* 引入亮色主题的代码块样式 */
 }
 
+/* 暗色主题下的代码块样式 */
 [data-scheme="dark"] {
-    --pre-text-color: #f8f8f2;
-    --pre-background-color: #272822;
-    @import "partials/highlight/dark.scss";
+    --pre-text-color: #f8f8f2; //没用
+    --pre-background-color: #faf4ed; /* 代码块背景颜色 ，跟高亮风格一致即可*/
+    @import "partials/highlight/dark.scss"; /* 引入暗色主题的代码块样式 */
 }
 
 :root {
@@ -191,4 +233,5 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
     --container-padding: 15px;
     --widget-separation: var(--section-separation);
 }
+
 

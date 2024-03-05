@@ -171,35 +171,28 @@ markup:
         ordered: true
         startLevel: 2
     highlight:
-        ## 是否在语法高亮的代码块中添加类，默认为 false
-        noClasses: false
-        
-         ## 是否启用代码块的代码标记，默认为 true
-        codeFences: true
-        
-        ## 是否猜测代码块的语法，默认为 true
-        guessSyntax: true
-        
+        style: rose-pine-dawn  # 代码样式
+        anchorLineNos: false  # 是否为行号创建锚点
+        noClasses: true # 是否在语法高亮的代码块中添加类，默认为 false
+        codeFences: true # 是否解析Markdown中的代码块
+        guessSyntax: true # 是否猜测代码块的语法，默认为 true
         ## 代码行号的起始值，默认为 1
         lineNoStart: 1
-        
          ## 是否显示代码块的行号，默认为 true
-        lineNos: true
-        
+        lineNos: false
         ## 是否在表格中显示代码行号，默认为 true
         lineNumbersInTable: true
-        
         ## 指定制表符的宽度，默认为 4
         tabWidth: 4
 
-# 自动更新最后修改时间 在文章中设置一个lastmod字段添加一个时间即可
+# 自动更新最后修改时间 在文章中设置一个lastmod字段添加一个时间即可（Cloudflare部署会有问题。）
 # enableGitInfo : true
-# frontmatter:
-  # lastmod:
+frontmatter:
+  lastmod:
     # - :git
-    # - :fileModTime
-    # - lastmod
-    # - :defalut
+    - :fileModTime
+    - :defalut
+    - lastmod
 
 
 

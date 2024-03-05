@@ -32,7 +32,7 @@
         .article-content {
             margin: var(--card-padding) 0;
             color: var(--card-text-color-main);
-
+			 
             .footnotes {
                 font-family: var(--base-font-family);
             }
@@ -100,7 +100,7 @@
 
     #TableOfContents {
         overflow-x: auto;
-        max-height: 75vh;
+        max-height: 75vh; // 控制目录的最大高度
 
         ol,
         ul {
@@ -125,7 +125,7 @@
         }
 
         li {
-            margin: 15px 0 15px 20px;
+            margin: 10px 10px; //目录项之间的距离
             padding: 5px;
 
             & > ol,

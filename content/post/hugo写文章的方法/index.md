@@ -26,4 +26,5 @@ lastmod: 2024-02-27
 start chrome http://localhost:1313/ & hugo server -D --source F:\privateData\my_yugo
 ```
 关闭本地浏览后有一个小bug，只能结束运行端口，不能关闭浏览器中的标签页。
-测试最后修改日期
+## 2024.03.05
+关于obsidian代码高亮的用法：要不就直接复制进来让他自动识别代码语言或则点击插入代码块区域在上方三个点后面输入代码语言。此方法有助于代码在obsidian以及在hugo中可以高亮显示。
