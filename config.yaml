@@ -194,11 +194,12 @@ markup:
 
 # 自动更新最后修改时间 在文章中设置一个lastmod字段添加一个时间即可
 # enableGitInfo : true
-frontmatter:
-  lastmod:
-    - :fileModTime
-    - lastmod
-    - :defalut
+# frontmatter:
+  # lastmod:
+    # - :git
+    # - :fileModTime
+    # - lastmod
+    # - :defalut
 
 
 

@@ -10,6 +10,7 @@ categories:
   - hugo
 weight: 
 description: 记录收集到的hugo写作方法
+lastmod: 2024-02-27
 ---
 
 ## 2024.02.23

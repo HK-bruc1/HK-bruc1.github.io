@@ -10,6 +10,7 @@ tags:
 categories:
   - Git
 slug: 78e24be7
+lastmod: 2024-03-02
 ---
 ## 日志美化
 默认的日志不太直观，从网络上参考了一下做出了如下配置：
