@@ -64,7 +64,7 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
 	* 基础字体系列
 	* 使用系统字体系列作为基础，并添加中文字体系列和 sans-serif 作为备用
 	*/
-    --base-font-family: "LXGW WenKai Screen", "Lato", var(--sys-font-family), var(--zh-font-family), sans-serif;
+    --base-font-family: "LXGW WenKai", "Lato", var(--sys-font-family), var(--zh-font-family), sans-serif;
 	/**
 	* 代码字体系列
 	* 使用 Menlo 作为首选，并添加 Monaco、Consolas、"Courier New" 和中文字体系列作为备用

@@ -15,7 +15,6 @@ weight:
 ## 装修计划
 - [ ] 代码块部分的高亮与背景以及代码行数不对齐问题
 - [ ] 评论系统要整一个只需要一个昵称就可以的
-- [x] bug1：最后修改时间似乎随着git提交时间全部刷新
 - [ ] 滚动条样式
 - [ ] 霞鹜文楷等宽字体上传到cdnjs
 ## 2024.02.23
@@ -30,13 +29,13 @@ weight:
 [hugo中文文档](https://hugo.opendocs.io/getting-started/configuration/#configure-dates)
 直接在front Matter中设置lastmod字段即可（但是不会自动修改，每次改动需要手动修改一下）
 **自动修改方案：**
-在站点配置文件config中，添加以下代码即可：
+~~在站点配置文件config中，添加以下代码即可：~~ **会导致bug：所有文件的最后修改时间会变成最近一次提交时间。解决方案：不用git方案，其他保留。**
 ```
 # 自动更新最后修改时间 
-enableGitInfo: true # 从git文件中获取相关信息
+# enableGitInfo: true # 从git文件中获取相关信息
 frontmatter:
   lastmod:
-    - :git
+    # - :git
     - :fileModTime
     - lastmod
     - :defalut
@@ -66,7 +65,7 @@ frontmatter:
 ### 文章行首缩进
 **参考文章：**
 [行首缩进](https://www.syfly007.com/post/CS/site/hugo%E7%BD%91%E7%AB%99%E6%90%AD%E5%BB%BA.html#%E8%A1%8C%E9%A6%96%E7%BC%A9%E8%BF%9B)
-使段落行首自动缩进2个空格(针对我的stack主题我的路径为\themes\hugo-theme-stack\assets\scss\partials，避免主题更新的问题文件我复制一份出来用于覆盖了)
+使段落（需要空一行才会识别为新段落）行首自动缩进2个空格(针对我的stack主题我的路径为\themes\hugo-theme-stack\assets\scss\partials，避免主题更新的问题文件我复制一份出来用于覆盖了)
 修改相关scss文件，增加段落样式
 ```
 .article-content p {
@@ -273,8 +272,6 @@ hugo mod clean --all && hugo --cleanDestinationDir
 [参考](https://ponder.lol/2023/custom-hugo-theme-stack/#%E6%B7%BB%E5%8A%A0%E8%83%8C%E6%99%AF%E7%9A%84%E8%9B%9B%E7%BD%91%E7%89%B9%E6%95%88)
 暂时看来两者好像都不怎么慢，如果以后慢的话可以选者嵌入代码方式而不是使用外部脚本。
 ## 2024.03.04
-### bug1：
-如果在分支中修改了文件，然后将分支合并到主分支，并且使用了 --no-ff 参数，那么主分支中所有文件的最后修改时间都将是合并时间。（所以在主题美化完成之前最后修改时间都是不正常的。）
 ### 字体样式的修改
 **参考文章：**
 [CDN使用LXGW WenKai Mono](https://shuilanjiao.gitee.io/p/2023/11/hugo-stack-lxgwwenkai/#cdn%E4%BD%BF%E7%94%A8lxgw-wenkai-mono)
@@ -286,7 +283,7 @@ hugo mod clean --all && hugo --cleanDestinationDir
 如果需要针对特定页面或组件进行字体自定义，则建议将自定义字体添加到 layouts/partials/footer/components/custom-font.html 中。
 如果希望全局应用字体自定义，则建议将自定义字体添加到 layouts/partials/head/custom.html 中。
 **由于中文网字计划的 CDN 被多个平台盗用，故未来将缩减提供公共 CDN 链接的相应流量，并且不再保证链接稳定性。所以各位开发者需要自行将字体部署至 CDN 中，为各位的网页加速**。我在[github](https://github.com/lxgw/LxgwWenKai/issues/24)（两个链接都使用了国内镜像）上看到了该字体已经被其他人上传到cdnjs了（有两个版本按需求选择即可）。一般来说，cdnjs上的字体文件都是由可靠的上传者上传的，并且cdnjs服务也是比较可靠的。因此，可以放心使用其他人上传的CDN链接。
-**我的步骤如下：** 复制提供的CDN链接，添加到主题目录\layouts\partials\head\custom.html中：
+**我的步骤如下：** ~~复制github上提供的CDN链接~~，添加到主题目录\layouts\partials\head\custom.html中：
 ```
 <!-- 引入霞鹜文楷字体 -->
 <link rel='stylesheet' href='https://cdn.staticfile.org/lxgw-wenkai-screen-webfont/1.6.0/style.css' /> 
@@ -317,5 +314,5 @@ hugo mod clean --all && hugo --cleanDestinationDir
     --code-font-family: Menlo, Monaco, Consolas, "Courier New", var(--zh-font-family), monospace;
 }
 ```
-原来字体的配置可以保留，以防cdn链接失效导致渲染错误。配置保存后结束本地服务器重启项目即可。
-
+原来字体的配置可以保留，以防cdn链接失效导致渲染错误。配置保存后结束本地服务器重启项目即可。**最后还是用上了中文网字计划的cdn因为他的版本字体细一点，那个Screen版有一点粗不好看。**
+## 2024.03.05
