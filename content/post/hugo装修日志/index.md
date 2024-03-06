@@ -18,6 +18,10 @@ lastmod: 2024-03-05
 - [ ] 评论系统要整一个只需要一个昵称就可以的
 - [ ] 滚动条样式
 - [ ] 霞鹜文楷等宽字体上传到cdnjs
+- [ ] 代码块也改成圆角的
+- [ ] 归档页面文章的简介没有
+- [ ] 相册功能（能加一下文字说明呢？）
+- [ ] 右侧有搜索了，能不能把左侧菜单的搜索删除
 ## 2024.02.23
 ### 添加waline评论系统
 **参考文章：**
@@ -491,5 +495,135 @@ li {
     }
 </script>
 ```
+## 2024.03.06
+### 整体布局的调整
+代码抄自[这里](https://www.blain.top/p/renovation/#%E6%95%B4%E4%BD%93%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%B7%E5%BC%8F%E8%A1%A8%E6%96%87%E4%BB%B6)调整一些格式（按需求添加，没生效的也没有添加）。能找到的变量我都在variables.scss文件中修改。其他不想花时间找（主要不熟悉前端）索性都放在\scss\custom.scss文件中：
+```scss
+//------------------------------------------------------
+// 修复引用块内容窄页面显示问题
+a {
+  word-break: break-all;
+}
+  
+code {
+  word-break: break-all;
+}
+//---------------------------------------------------
+// 文章内容图片圆角阴影
+.article-page .main-article .article-content {
+  img {
+    max-width: 96% !important;
+    height: auto !important;
+    border-radius: 8px;
+  }
+}
+//------------------------------------------------
+// 文章内容引用块样式
+.article-content {
+  blockquote {
+    border-left: 6px solid #358b9a1f !important;
+    background: #B2DFEE;//引用块颜色
+  }
+}
+// ---------------------------------------
+// 代码块基础样式修改（改成了圆角）
+.highlight {
+  max-width: 102% !important;
+  background-color: var(--pre-background-color);
+  padding: var(--card-padding);
+  position: relative;
+  border-radius: 20px;
+  margin-left: -7px !important;
+  margin-right: -12px;
+  box-shadow: var(--shadow-l1) !important;
+
+  &:hover {
+    .copyCodeButton {
+	  opacity: 1;
+    }
+  }
+
+  // keep Codeblocks LTR
+  [dir="rtl"] & {
+    direction: ltr;
+  }
+
+  pre {
+    margin: initial;
+    padding: 0;
+    margin: 0;
+    width: auto;
+  }
+}
+//-------------------------------------------
+// 设置选中字体的区域背景颜色
+//修改选中颜色
+::selection {
+  color: #fff;
+  background: rgba(52, 73, 94, 0.5);
+}
+  
+a {
+  text-decoration: none;
+  color: var(--accent-color);
+  
+  &:hover {
+    color: var(--accent-color-darker);
+  }
+  
+  &.link {
+    color: #4288b9ad;
+    font-weight: 600;
+    padding: 0 2px;
+    text-decoration: none;
+    cursor: pointer;
+  
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}  
+//-------------------------------------------------
+//文章封面高度更改
+.article-list article .article-image img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  
+  @include respond(md) {
+    height: 250px;
+  }
+  
+  @include respond(xl) {
+    height: 285px;
+  }
+}
+//-------------------------------------------------------
+//全局页面小图片样式微调（主要是归档页面的小图片变成圆角）
+.article-list--compact article .article-image img {
+  width: var(--image-size);
+  height: var(--image-size);
+  object-fit: cover;
+  border-radius: 17%;
+} 
+//----------------------------------------------------
+//固定代码块的高度（代码区域限制高度，超出改为滑动浏览）
+.article-content {
+  .highlight {
+      padding: var(--card-padding);
+      pre {
+          width: auto;
+          max-height: 20em;
+      }
+  }
+}
+```
+### 去除归档页初始滤镜
+刚开始以为是图片问题呢。。。
+参考来自[这里](https://www.blain.top/p/renovation/#%E5%8E%BB%E9%99%A4%E5%BD%92%E6%A1%A3%E9%A1%B5%E5%88%9D%E5%A7%8B%E6%BB%A4%E9%95%9C)
+### 添加右下角联系小气泡按钮
+**参考文章：**
+- [点击这里！](https://irithys.com/hugo-mod-1/#%e8%81%94%e7%b3%bb%e6%b0%94%e6%b3%a1)
+文章很详细了，完美配置了！用了气泡之后怎么感觉速度慢了不少？这才三篇文章呢！！！加了气泡之后每一次本地修改加载都很慢。。。
 
 

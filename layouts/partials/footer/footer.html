@@ -33,7 +33,7 @@
 	
     <section class="powerby">
         {{ with .Site.Params.footer.customText }}
-            {{ . | safeHTML }} <br/>
+          <span class="custom-text">{{ . | safeHTML }}</span><br/>
         {{ end }}
 
         {{- $Generator := `<a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>` -}}

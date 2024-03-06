@@ -1,8 +1,10 @@
 ---
 title: 关于
 menu:
-    main: 
-        weight: -90
-        params:
-            icon: user
+  main:
+    weight: 2
+    params:
+      icon: user
+comments: false
 ---
+你好

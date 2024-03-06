@@ -90,7 +90,7 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
     /* 卡片分隔线颜色 */
     --card-separator-color: rgba(218, 218, 218, 0.5);
 
-    /* 卡片边框半径 */
+    /*  全局卡片边框10px 没效果*/
     --card-border-radius: 10px;
 
     /* 卡片填充 */
@@ -132,7 +132,7 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
 :root {
     /* 文章字体族 */
     --article-font-family: var(--base-font-family);
-    /* 文章字体大小 */
+    /* 文章字体大小（可能会被覆盖） */
     --article-font-size: 1.6rem;
 
     /* 中等屏幕上的文章字体大小 */
@@ -168,10 +168,10 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
     --pre-background-color: #272822;
     /* 代码块文本颜色 */
     --pre-text-color: #f8f8f2;
-    /* 代码背景颜色，没用 */
-    --code-background-color: rgba(0, 0, 0, 0.12);
-    /* 代码文本颜色 */
-    --code-text-color: #808080;
+    /* 代码背景颜色rgba(0, 0, 0, 0.12)，没用可能被高亮风格封盖了 */
+    --code-background-color: #f8f8f8;
+    /* 代码文本颜色，#808080 */
+    --code-text-color: #e96900;
 
     /* 表格边框颜色 */
     --table-border-color: #dadada;
@@ -183,9 +183,9 @@ $defaultTagColors: #fff, #fff, #fff, #fff, #fff;
 
     /* 暗模式下的代码块背景颜色 */
     &[data-scheme="dark"] {
-        --code-background-color: #272822;
+        --code-background-color: #ff6d1b17; /*#272822可能被高亮风格封盖了*/
         /* 暗模式下的代码文本颜色 */
-        --code-text-color: rgba(255, 255, 255, 0.9);
+        --code-text-color: #e96900;
 
         /* 暗模式下的表格边框颜色 */
         --table-border-color: #717171;
