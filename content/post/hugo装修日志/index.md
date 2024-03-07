@@ -10,7 +10,7 @@ tags:
 categories:
   - hugo
 weight: 
-lastmod: 2024-03-05
+lastmod: 2024-03-06
 ---
 
 ## 装修计划
@@ -22,12 +22,16 @@ lastmod: 2024-03-05
 - [ ] 归档页面文章的简介没有
 - [ ] 相册功能（能加一下文字说明呢？）
 - [ ] 右侧有搜索了，能不能把左侧菜单的搜索删除
+- [ ] 右侧目录可以变成按钮但是文章的宽度找不到在哪里改
+- [ ] 滚动条美化失败
+- [ ] 友链实现三栏样式
+- [ ] 归档图片大小问题
 ## 2024.02.23
-### 添加waline评论系统
+### 添加waline评论系统 
 **参考文章：**
 [waline快速上手](https://waline.js.org/guide/get-started/)
 在[LeanCloud](https://console.leancloud.app/apps) 设置数据库（free,保存评论数据？），拿到相关密钥后去[Vercel](https://vercel.com/)部署服务端（free,让系统跑起来？）最后在网页中引入客户端（相当于app?）
-一开始我把博客的库作为vercel的客户端了，导致后面评论管理端老是进不去。后来单独占用一个github私库就可以了。**评论系统是用不了，虽然可以看到客户端。**
+一开始我把博客的库作为vercel的客户端了，导致后面评论管理端老是进不去。后来单独占用一个github私库就可以了。管理面板：https://hugo-waline-hhkhj4j4x-bruces-projects-5f023f7b.vercel.app/ui
 ## 2024.02.24
 ### 添加最后修改时间
 **参考文章：**
@@ -495,6 +499,7 @@ li {
     }
 </script>
 ```
+**有一些页面没有，需要单独添加（Gemini说是其他页面用的是不同的模板所以没有）。**
 ## 2024.03.06
 ### 整体布局的调整
 代码抄自[这里](https://www.blain.top/p/renovation/#%E6%95%B4%E4%BD%93%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%B7%E5%BC%8F%E8%A1%A8%E6%96%87%E4%BB%B6)调整一些格式（按需求添加，没生效的也没有添加）。能找到的变量我都在variables.scss文件中修改。其他不想花时间找（主要不熟悉前端）索性都放在\scss\custom.scss文件中：
@@ -625,5 +630,23 @@ a {
 **参考文章：**
 - [点击这里！](https://irithys.com/hugo-mod-1/#%e8%81%94%e7%b3%bb%e6%b0%94%e6%b3%a1)
 文章很详细了，完美配置了！用了气泡之后怎么感觉速度慢了不少？这才三篇文章呢！！！加了气泡之后每一次本地修改加载都很慢。。。
+### 友链页面
+[参考](https://thirdshire.com/hugo-stack-renovation-part-two/#%E5%88%9B%E5%BB%BA%E5%8F%8B%E9%93%BElayout)因为用了示例站点的配置，我把所有改动的地方都复制出来了，所以上面教程配置好后，把原主题自带的links(如果复制出来的话)删掉。把教程的friends文件改成links用以覆盖，即可显示出教程设定的布局样式。还需要再补充一点代码（不需要的元数据不用加载）让它显示在左边的菜单中：
+```
+title: 友链
+slug: "friends"
+layout: "links"
+image: cover.jpg
+readingTime: false
+license: false
+menu:
+    main: 
+        weight: 5
+        params:
+            icon: link
+```
+
+
+
 
 

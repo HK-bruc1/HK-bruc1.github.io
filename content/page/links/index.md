@@ -1,33 +1,28 @@
 ---
 title: 友链
-links:
-  - title: GitHub
-    description: GitHub is the world's largest software development platform.
-    website: https://github.com
-    image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+slug: "friends"
+layout: "links"
+image: cover.jpg
+readingTime: false
+license: false
 menu:
     main: 
-        weight: 4
+        weight: 5
         params:
             icon: link
-
-comments: false
 ---
 
-To use this feature, add `links` section to frontmatter.
 
-This page's frontmatter:
 
-```yaml
-links:
-  - title: GitHub
-    description: GitHub is the world's largest software development platform.
-    website: https://github.com
-    image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-  - title: TypeScript
-    description: TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.
-    website: https://www.typescriptlang.org
-    image: ts-logo-128.jpg
+
+
+欢迎大家常来看看！
+
+以下是本站信息：
+
 ```
-
-`image` field accepts both local and external images.
+title: Broos
+website: hk-bruc1-github-io.pages.dev/
+avatar: 
+description: 悲观者永远正确，乐观者永远前行！
+```

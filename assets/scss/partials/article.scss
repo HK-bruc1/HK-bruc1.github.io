@@ -149,6 +149,17 @@
 
 /* Compact style article list */
 .article-list--compact {
+
+	.article-time {
+        font-size: 1.4rem;
+    }
+
+    .article-link {
+        color: var(--emphasize-text-color);
+        font-size: 1.3rem;
+        font-style: italic;
+    }
+		
     border-radius: var(--card-border-radius);
     box-shadow: var(--shadow-l1);
     background-color: var(--card-background);

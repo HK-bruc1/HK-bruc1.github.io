@@ -70,20 +70,20 @@ params:
 
         # Waline client configuration see: https://waline.js.org/en/reference/component.html
         waline:
-            serverURL: https://hugo-comment-by-waline-4z6ikduz0-bruces-projects-5f023f7b.vercel.app/
+            serverURL: https://hugo-waline-hhkhj4j4x-bruces-projects-5f023f7b.vercel.app/
             lang: zh-CN
-            pageview: true  # 网站的浏览量功能
+            pageview: false  # 网站的浏览量功能
             emoji:
                 - https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tieba
                 - https://cdn.jsdelivr.net/gh/walinejs/emojis/qq
                 - https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/alus
             requiredMeta:
                 - name
-                - email
-                - url
+                # - email
+                # - url
             locale:
                 admin: 站长
-                placeholder: 说点什么吧！
+                placeholder: 可以留下邮箱，以便收到回复通知哦！
 # 首页插件         
     widgets:
         homepage:
@@ -187,12 +187,33 @@ markup:
 
 # 自动更新最后修改时间 在文章中设置一个lastmod字段添加一个时间即可（Cloudflare部署会有问题。）
 # enableGitInfo : true
-frontmatter:
-  lastmod:
+# frontmatter:
+  # lastmod:
     # - :git
-    - :fileModTime
-    - :defalut
-    - lastmod
+    # - :fileModTime
+    # - :defalut
+    # - lastmod
+    
+# 友链的相关设置
+module:
+  mounts:
+    - source: content
+      target: content
+    - source: static
+      target: static
+    - source: layouts
+      target: layouts
+    - source: data
+      target: data
+    - source: assets
+      target: assets
+    - source: i18n
+      target: i18n
+    - source: archetypes
+      target: archetypes
+    - source: assets/link-img
+      target: static/link-img
+
 
 
 
