@@ -27,12 +27,19 @@ lastmod: 2024-03-06
 - [ ] 友链实现三栏样式
 - [ ] 归档图片大小问题
 ## 2024.02.23
-### 添加waline评论系统 
+### ~~添加waline评论系统~~ [转战Giscus](###引入Giscus)
 **参考文章：**
 [waline快速上手](https://waline.js.org/guide/get-started/)
 在[LeanCloud](https://console.leancloud.app/apps) 设置数据库（free,保存评论数据？），拿到相关密钥后去[Vercel](https://vercel.com/)部署服务端（free,让系统跑起来？）最后在网页中引入客户端（相当于app?）
 一开始我把博客的库作为vercel的客户端了，导致后面评论管理端老是进不去。后来单独占用一个github私库就可以了。管理面板：https://hugo-waline-hhkhj4j4x-bruces-projects-5f023f7b.vercel.app/ui
 **问题：** 部署的waline客户端可以直接评论。但是嵌入网页之后，就评论不了。
+看起来问题确实是出现在远程服务器上，它的响应缺少 Access-Control-Allow-Origin 标头，导致浏览器阻止了从你的网站发起的请求。
+解决这个问题的最佳方法是在远程服务器上配置正确的 CORS 头部。你需要确保远程服务器正确地响应跨域请求，允许你的网站作为来源。
+如果你有权限访问远程服务器的配置，你可以尝试在服务器端配置 CORS。具体来说，你需要在服务器的响应中添加 Access-Control-Allow-Origin 头部，将其设置为你的网站域名，例如：
+Access-Control-Allow-Origin: https://hk-bruc1-github-io.pages.dev
+这样一来，浏览器就会允许从你的网站发起的请求访问远程服务器资源了。
+如果你没有权限访问远程服务器的配置，你可以尝试联系远程服务器的管理员或者服务提供商，请求他们添加正确的 CORS 头部。
+另外，注意到你的请求返回了 401 错误，这可能意味着你的请求未经授权。你需要确保在发起请求时提供了正确的身份验证信息，以便远程服务器正确处理请求。国内域名要备案。麻烦。。。
 ## 2024.02.24
 ### 添加最后修改时间
 **参考文章：**
@@ -646,6 +653,11 @@ menu:
         params:
             icon: link
 ```
+### 引入Giscus
+**参考：**
+[Hugo博客添加Giscus评论功能](https://haoyep.com/posts/hugo-add-component/)
+[Hugo博客引入Giscus评论系统](https://www.lixueduan.com/posts/blog/02-add-giscus-comment/)
+搞来搞去还是太麻烦了，不是被墙就是被墙的路上，选了个最简单的。
 
 
 

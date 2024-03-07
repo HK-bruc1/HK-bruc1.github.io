@@ -63,27 +63,24 @@ params:
             enabled: true
             default: Licensed under CC BY-NC-SA 4.0
             
-# 评论设置--------------（差一个评论管理注册）
+# 评论设置
     comments:
         enabled: true
-        provider: waline
-
-        # Waline client configuration see: https://waline.js.org/en/reference/component.html
-        waline:
-            serverURL: https://hugo-waline-hhkhj4j4x-bruces-projects-5f023f7b.vercel.app/
+        provider: giscus
+        giscus:
+            repo: HK-bruc1/HK-bruc1.github.io
+            repoID: R_kgDOLWTVtw
+            category: Announcements
+            categoryID: DIC_kwDOLWTVt84CdytP
+            mapping: pathname
+            strict: 0
+            lightTheme: noborder_light
+            darkTheme: transparent_dark
+            reactionsEnabled: 1
+            emitMetadata: 0
+            inputPosition: bottom
             lang: zh-CN
-            pageview: false  # 网站的浏览量功能
-            emoji:
-                - https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tieba
-                - https://cdn.jsdelivr.net/gh/walinejs/emojis/qq
-                - https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/alus
-            requiredMeta:
-                - name
-                # - email
-                # - url
-            locale:
-                admin: 站长
-                placeholder: 可以留下邮箱，以便收到回复通知哦！
+     
 # 首页插件         
     widgets:
         homepage:
