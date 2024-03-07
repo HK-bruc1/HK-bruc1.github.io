@@ -72,7 +72,7 @@ params:
             repoID: R_kgDOLWTVtw
             category: Announcements
             categoryID: DIC_kwDOLWTVt84CdytP
-            mapping: pathname
+            mapping: title
             strict: 0
             lightTheme: noborder_light
             darkTheme: transparent_dark

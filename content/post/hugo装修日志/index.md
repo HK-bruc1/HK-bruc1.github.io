@@ -10,24 +10,22 @@ tags:
 categories:
   - hugo
 weight: 
-lastmod: 2024-03-06
+lastmod: 2024-03-07
 ---
 
 ## 装修计划
 - [ ] 代码块部分的高亮与背景以及代码行数不对齐问题
-- [ ] 评论系统要整一个只需要一个昵称就可以的
 - [ ] 滚动条样式
 - [ ] 霞鹜文楷等宽字体上传到cdnjs
-- [ ] 代码块也改成圆角的
+- [x] 代码块也改成圆角的
 - [ ] 归档页面文章的简介没有
 - [ ] 相册功能（能加一下文字说明呢？）
 - [ ] 右侧有搜索了，能不能把左侧菜单的搜索删除
 - [ ] 右侧目录可以变成按钮但是文章的宽度找不到在哪里改
-- [ ] 滚动条美化失败
-- [ ] 友链实现三栏样式
+- [x] 友链实现三栏样式
 - [ ] 归档图片大小问题
 ## 2024.02.23
-### ~~添加waline评论系统~~ [转战Giscus](###引入Giscus)
+### ~~添加waline评论系统~~ 转战Giscus
 **参考文章：**
 [waline快速上手](https://waline.js.org/guide/get-started/)
 在[LeanCloud](https://console.leancloud.app/apps) 设置数据库（free,保存评论数据？），拿到相关密钥后去[Vercel](https://vercel.com/)部署服务端（free,让系统跑起来？）最后在网页中引入客户端（相当于app?）
@@ -657,7 +655,7 @@ menu:
 **参考：**
 [Hugo博客添加Giscus评论功能](https://haoyep.com/posts/hugo-add-component/)
 [Hugo博客引入Giscus评论系统](https://www.lixueduan.com/posts/blog/02-add-giscus-comment/)
-搞来搞去还是太麻烦了，不是被墙就是被墙的路上，选了个最简单的。
+搞来搞去还是太麻烦了，不是被墙就是被墙的路上，选了个最简单的。自此装修暂时告一段落，等静下心来学习一段时间，看能不能搞出自己想要的主题。
 
 
 
