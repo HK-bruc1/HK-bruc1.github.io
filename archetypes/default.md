@@ -1,6 +1,7 @@
 ---
 title: "{{ replace .Name "-" " " | title }}"
 date: {{ .Date }}
+lastmod:
 draft: true
 image: cover.jpg
 description: 这是标题下面
