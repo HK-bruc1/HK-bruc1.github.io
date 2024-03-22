@@ -10,7 +10,7 @@ tags:
 categories:
   - hugo
 weight: 
-lastmod: 2024-03-07
+lastmod: 2024-03-16
 ---
 
 ## 装修计划
@@ -24,6 +24,7 @@ lastmod: 2024-03-07
 - [ ] 右侧目录可以变成按钮但是文章的宽度找不到在哪里改
 - [x] 友链实现三栏样式
 - [ ] 归档图片大小问题
+- [x] 蜘蛛网失效
 ## 2024.02.23
 ### ~~添加waline评论系统~~ 转战Giscus
 **参考文章：**
@@ -286,6 +287,140 @@ hugo mod clean --all && hugo --cleanDestinationDir
 ### 添加背景的蜘蛛网特效
 [参考](https://ponder.lol/2023/custom-hugo-theme-stack/#%E6%B7%BB%E5%8A%A0%E8%83%8C%E6%99%AF%E7%9A%84%E8%9B%9B%E7%BD%91%E7%89%B9%E6%95%88)
 暂时看来两者好像都不怎么慢，如果以后慢的话可以选者嵌入代码方式而不是使用外部脚本。
+#### 外部脚本失效，尝试使用嵌入脚本代码2024.03.16
+在同样的文件中修改：
+```html
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}" dir="{{ default `ltr` .Language.LanguageDirection }}">
+    <head>
+        {{- partial "head/head.html" . -}}
+        {{- block "head" . -}}{{ end }}
+    </head>
+    <body class="{{ block `body-class` . }}{{ end }}">
+        {{- partial "head/colorScheme" . -}}
+
+        {{/* The container is wider when there's any activated widget */}}
+        {{- $hasWidget := false -}}
+        {{- range .Site.Params.widgets -}}
+            {{- if gt (len .) 0 -}}
+                {{- $hasWidget = true -}}
+            {{- end -}}
+        {{- end -}}
+        <div class="container main-container flex on-phone--column {{ if $hasWidget }}extended{{ else }}compact{{ end }}">
+            {{- block "left-sidebar" . -}}
+                {{ partial "sidebar/left.html" . }}
+            {{- end -}}
+            {{- block "right-sidebar" . -}}{{ end }}
+            <main class="main full-width">
+                {{- block "main" . }}{{- end }}
+            </main>
+        </div>
+        {{ partial "footer/include.html" . }}
+		<!-- 添加蜘蛛网特效的内联 JavaScript 代码 -->
+		<script type="text/javascript">
+			!(function () {
+				function o(w, v, i) {
+					return w.getAttribute(v) || i
+				}
+				function j(i) {
+					return document.getElementsByTagName(i)
+				}
+				function l() {
+					var i = j('script'),
+						w = i.length,
+						v = i[w - 1]
+					return {
+						l: w,
+						z: o(v, 'zIndex', -1),
+						o: o(v, 'opacity', 0.5),
+						c: o(v, 'color', '0,0,0'),
+						n: o(v, 'count', 99),
+					}
+				}
+				function k() {
+					;(r = u.width =
+						window.innerWidth ||
+						document.documentElement.clientWidth ||
+						document.body.clientWidth),
+						(n = u.height =
+							window.innerHeight ||
+							document.documentElement.clientHeight ||
+							document.body.clientHeight)
+				}
+				function b() {
+					e.clearRect(0, 0, r, n)
+					var w = [f].concat(t)
+					var x, v, A, B, z, y
+					t.forEach(function (i) {
+						;(i.x += i.xa),
+							(i.y += i.ya),
+							(i.xa *= i.x > r || i.x < 0 ? -1 : 1),
+							(i.ya *= i.y > n || i.y < 0 ? -1 : 1),
+							e.fillRect(i.x - 0.5, i.y - 0.5, 1, 1)
+						for (v = 0; v < w.length; v++) {
+							x = w[v]
+							if (i !== x && null !== x.x && null !== x.y) {
+								;(B = i.x - x.x), (z = i.y - x.y), (y = B * B + z * z)
+								y < x.max &&
+									(x === f &&
+										y >= x.max / 2 &&
+										((i.x -= 0.03 * B), (i.y -= 0.03 * z)),
+										(A = (x.max - y) / x.max),
+										e.beginPath(),
+										(e.lineWidth = A / 2),
+										(e.strokeStyle = 'rgba(' + s.c + ',' + (A + 0.2) + ')'),
+										e.moveTo(i.x, i.y),
+										e.lineTo(x.x, x.y),
+										e.stroke())
+							}
+						}
+						w.splice(w.indexOf(i), 1)
+					}),
+						m(b)
+				}
+				var u = document.createElement('canvas'),
+					s = l(),
+					c = 'c_n' + s.l,
+					e = u.getContext('2d'),
+					r,
+					n,
+					m =
+						window.requestAnimationFrame ||
+						window.webkitRequestAnimationFrame ||
+						window.mozRequestAnimationFrame ||
+						window.oRequestAnimationFrame ||
+						window.msRequestAnimationFrame ||
+						function (i) {
+							window.setTimeout(i, 1000 / 45)
+						},
+					a = Math.random,
+					f = { x: null, y: null, max: 20000 }
+				u.id = c
+				u.style.cssText =
+					'position:fixed;top:0;left:0;z-index:' + s.z + ';opacity:' + s.o
+				j('body')[0].appendChild(u)
+				k(), (window.onresize = k)
+				;(window.onmousemove = function (i) {
+					;(i = i || window.event), (f.x = i.clientX), (f.y = i.clientY)
+				}),
+					(window.onmouseout = function () {
+						;(f.x = null), (f.y = null)
+					})
+				for (var t = [], p = 0; s.n > p; p++) {
+					var h = a() * r,
+						g = a() * n,
+						q = 2 * a() - 1,
+						d = 2 * a() - 1
+					t.push({ x: h, y: g, xa: q, ya: d, max: 6000 })
+				}
+				setTimeout(function () {
+					b()
+				}, 100)
+			})()
+		</script>	
+	</body>
+</html>
+```
 ## 2024.03.04
 ### 字体样式的修改
 **参考文章：**
