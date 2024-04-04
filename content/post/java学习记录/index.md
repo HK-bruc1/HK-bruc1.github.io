@@ -10,7 +10,7 @@ tags:
 categories:
   - 工作
 slug: 487790c9
-lastmod: 2024-03-21
+lastmod: 2024-03-22
 ---
 ## Java学习路线
 - [x] Java基础：首先，你需要打好Java基础，包括语法、面向对象编程等。这是构建后续学习的基础，也是面试中的常见问题。**（因为有之前的部分基础，所以只复习Java特有部分，其他快速过，数据结构与算法暂时跳过）**
@@ -369,7 +369,7 @@ lastmod: 2024-03-21
 ### day13
 - 基于idea创建maven的web工程
 	- 与普通的maven的Java工程的区别就是少了web模块，直接在pom文件中把打包方式改成war即可在右边刷新。
-	- 在项目结构中点击出现的web，点击加号把路径补充为下方指定的路径点击应用就会出现webapp下web.xml
+	- **在项目结构中点击出现的web，点击加号把路径补充为下方指定的路径点击应用就会出现webapp下web.xml**
 	- 可以使用插件JavaToWeb创建maven的Java工程后右键点击转换。
 	- 可以使用自带的maven archetype，只不过web.xml版本比较低。
 	- **部署到tomcat的教程有需要再看。**
@@ -467,11 +467,8 @@ project-name
 		- 构建顺序：Maven 会自动按照父子项目的依赖关系来确定构建顺序，确保子项目在构建时能够正确地解决依赖关系。
 		- 组织结构：通过聚合，可以将相关的 Maven 项目组织在一起，形成一个逻辑上的整体。这样可以更清晰地理解项目的结构和关系。
 		- 要创建一个 Maven 工程聚合，通常的做法是创建一个父项目和多个子项目，并在子项目的 pom.xml 文件中指定父项目的坐标信息。然后，可以使用 Maven 的命令来管理和构建整个聚合项目，包括对父项目和子项目的操作。
-## Spring Boot / Spring MVC
-- Spring框架核心：在学习Spring Boot和Spring MVC之前，建议先学习Spring框架的核心概念，包括控制反转（IoC）、依赖注入（DI）、面向切面编程（AOP）等。这些概念是Spring Boot和Spring MVC的基础。
-- Spring Boot入门：学习如何使用Spring Boot来快速构建Java应用程序。了解Spring Boot的核心特性、自动配置原理、Starter依赖等内容。
-- Spring MVC基础：学习Spring MVC框架的基本概念，包括控制器、视图解析器、模型数据绑定等。理解MVC架构的基本原理以及如何在Spring MVC中实现。
-- Spring Boot与Spring MVC集成：学习如何在Spring Boot应用程序中集成Spring MVC，以及如何利用Spring Boot的自动配置简化Spring MVC应用程序的开发和部署。
+- 在 IDEA 中，如果依赖已经正确地显示在项目依赖中，而你无法在本地 Maven 仓库中找到它们，通常情况下是因为 **IDEA 使用了自己的缓存来管理依赖，而不是依赖直接放在本地 Maven 仓库中。 IDEA 会在其自己的缓存中管理依赖，并且不像 Maven 那样把它们直接下载到本地 Maven 仓库。** 因此，只要在 IDEA 中正确显示了依赖，并且项目能够正常编译和运行，你就不需要过于担心依赖是否存在于本地 Maven 仓库中。
+- 如果你在 IntelliJ IDEA 中直接删除了 Maven 项目，IDEA 会删除项目文件和配置，但它不会自动删除你在本地 Maven 仓库中下载的依赖。这意味着你需要手动删除本地 Maven 仓库中与你删除的项目相关的依赖。
 
 
 
