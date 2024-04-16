@@ -2,7 +2,7 @@
 title: IDEA玩法收集
 date: 2024-04-11T10:43:23+08:00
 lastmod: 2024-04-13
-draft: true
+draft: false
 image: cover.jpg
 description: IDEA使用技巧收集
 keywords: IDEA使用技巧
