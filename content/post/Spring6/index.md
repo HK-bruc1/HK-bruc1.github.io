@@ -8,6 +8,7 @@ description: 之前文章太长了新开一篇不然软件有一点卡
 keywords: spring6
 tags:
   - java
+  - spring
 categories:
   - 工作
 slug: 0810724b
