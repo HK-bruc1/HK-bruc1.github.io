@@ -581,3 +581,571 @@ public Result deleteCategory(@NotNull(message = "id不能为空！") Integer id)
     return Result.success();  
 }
 ```
+## 文章管理功能设计
+### 新增文章
+- 老套路的实现方式
+- 表现层可以负责传入**参数校验问题**
+- 业务层可以负责**补充参数值的问题** ，再利用lombok工具提供的自动生成对外的访问属性的set和get方法进行赋值，完善要插入参数信息。
+#### 参数校验
+- 字符串非空：可以用@NotEmpty
+- 数字非空：@NotNull
+- 对格式有要求可以用：@Pattern(regexp = "^\\S{1,10}$")。1-10个非空字符
+- 已有的注解无法满足需求，那么就需要自定义注解。
+#### 自定义注解
+- 步骤一：自定义注解State   (去看一下其他注解的源码格式，删除一下不必要的东西即可)
+```java
+package com.itheima.anno;  
+  
+import jakarta.validation.Constraint;  
+import jakarta.validation.Payload;  
+  
+import java.lang.annotation.*;  
+  
+import static java.lang.annotation.ElementType.FIELD;  
+  
+/**  
+ * @author: Bruce  
+ * @description: 自定义注解  
+ * @date: 2024/4/17 17:57  
+ */  
+@Documented //元注解  
+@Target({FIELD}) //元注解  
+@Retention(RetentionPolicy.RUNTIME) //元注解  
+@Constraint(validatedBy = {})  
+  
+public @interface State {  
+    //校验失败后的信息  
+    String message() default "state的值只能是发布或则草稿";  
+  
+    //指定分组  
+    Class<?>[] groups() default {};  
+  
+    //负载 获取到state注解的附加信息  
+    Class<? extends Payload>[] payload() default {};  
+}
+```
+1. `@Documented`：这是一个元注解，用于指示该注解应该包含在 Java 文档中。
+2. `@Target({FIELD})`：这是一个元注解，用于指定该注解可以应用的目标类型。在这里，`FIELD` 表示该注解可以应用到字段上。
+3. `@Retention(RetentionPolicy.RUNTIME)`：这是一个元注解，用于指定该注解在运行时保留，以便能够通过反射获取到注解信息。
+4. `@Constraint(validatedBy = {})`：这是一个约束注解，用于指定该注解所对应的校验器类。在这里，`validatedBy = {}` 表示**暂时没有指定校验器类，即该注解的校验逻辑还未实现。指定由谁来提供校验规则** 
+5. `public @interface State { ... }`：这是一个注解声明，定义了一个名为 `State` 的注解。在注解中包含了以下元素：
+    - `String message() default "state的值只能是发布或则草稿"`：这是一个属性元素，用于定义校验失败时的错误消息，默认为 "state的值只能是发布或则草稿"。
+    - `Class<?>[] groups() default {}`：这是一个属性元素，用于指定分组。在校验时，可以根据不同的分组执行不同的校验规则。
+    - `Class<? extends Payload>[] payload() default {}`：这是一个属性元素，用于指定负载信息。在校验时，可以获取到该注解的附加信息。
+
+这个自定义注解的目的是让开发人员可以在字段上使用 `@State` 注解，并指定合法的状态值。你**需要实现一个校验器类，来校验字段的值是否符合预期的状态。**
+- 步骤二：定义了注解之后，通常需要**编写一个校验器类来实现具体的校验逻辑**。校验器类需要实现 `javax.validation.ConstraintValidator` 接口，并重写其中的`isValid` 方法。
+- 校验器类的主要作用是定义校验逻辑，根据实际需求来判断被注解标记的字段是否符合预期的校验规则。在 `isValid` 方法中，你可以编写校验逻辑，并根据情况返回 `true` 或 `false`。
+```Java
+package com.itheima.validation;  
+  
+import com.itheima.anno.State;  
+import jakarta.validation.ConstraintValidator;  
+import jakarta.validation.ConstraintValidatorContext;  
+  
+/**  
+ * @author: Bruce  
+ * @description: 实现自定义校验的验证逻辑  
+ * @date: 2024/4/17 18:12  
+ */public class StateValidation implements ConstraintValidator<State, String> {  
+    @Override  
+    public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {  
+        //提供校验规则  
+        if(value==null){  
+            return false;  
+        }  
+        if (value.equals("已发布") || value.equals("草稿")) {  
+            return true;  
+        }  
+        return false;  
+    }  
+}
+```
+- 第三步骤：就和普通注解一样了，因为已经在方法参数上启用了，直接去类中的属性上使用即可。
+- 不知道算不算bug：用postman测试接口时，连续发布两篇相同的文章也能成功。**但是前端是点击按钮，点击发布之后弹窗就会消失，不会连续发布。**
+### 查看文章列表（条件分页）
+- 需求：用户可以在自己的文章管理中查看文章列表
+- 通过**分类id和文章的发布状态**来查看
+- 在响应结果中可以指定**展示多少页，每页展示几篇文章**
+- 通过拦截器的用户id来锁定该用户的文章
+#### 注解说明
+- **参数校验：**
+你在参数上使用了 `@RequestParam(required = false)`，这表示这些参数是可选的，不是必须的。这样设计是合理的，因为用户可能只想按照某些条件进行筛选，而不是所有条件都需要提供。如果某些参数是必须的，可以将 `required` 设置为 `true`。
+#### 服务层代码
+- **分页处理：**
+- 你使用了 PageHelper 来进行分页查询，这是一个很好的选择。通过调用 `PageHelper.startPage(pageNum, pageSize)` 方法，可以告诉 MyBatis 对后续的查询进行分页处理。确保在调用 Mapper 方法之前调用了 `startPage` 方法，并且正确地传入了 pageNum 和 pageSize。
+- 使用 PageHelper 进行分页查询时，如果传入的 pageNum 或 pageSize 参数不合法，**例如为 null、小于等于 0 等，PageHelper 会在底层进行参数校验，并抛出相应的异常。这种间接的参数校验确保了查询的合法性**，避免了查询失败或返回错误数据的情况。（不需要特地去两个参数前添加校验注解了）
+- **为什么此处补充属性时需要new对象而其他接口直接用类名调用set即可？**
+```Java
+//文章列表查询  
+@Override  
+public PageBean<Article> list(Integer pageNum, Integer pageSize, String categoryId, String state) {  
+    //创建pageBean对象？？？？？  
+    PageBean<Article> pb = new PageBean<>();  
+  
+    //开启分页查询（自动会在sql后面加入限制）  
+    PageHelper.startPage(pageNum,pageSize);  
+  
+    //调用mapper  
+    Map<String,Object> map = ThreadLocalUtil.get();  
+    Integer userId = (Integer) map.get("id");  
+    List<Article> as = articleMapper.list(userId,categoryId,state);  
+    //Page是List的子类中提供了特有的方法，可以获取pageHelper分页查询后得到的总记录条数和当前页数据  
+    Page<Article> p = (Page<Article>) as;  
+  
+    //把数据填充到PageBean对象中（就两个属性，文章总条数，查询到的文章集合）  
+    pb.setTotal(p.getTotal());  
+    pb.setItems(p.getResult());  
+    return pb;  
+}
+```
+- **在类实例化之前，不能使用实例方法或属性**。Java是一种面向对象的语言，类的实例方法通常依赖于类的实例状态。因此，**在类实例化之前，类的实例状态还不存在，因此无法使用实例方法或属性。**
+- 其他接口能直接使用的原因是**传入的参数就已经是一个实例化对象了，而上一个对象根本没有实例化，所以必须要new对象或则放入容器，用的时候再注入bean对象**：
+```java
+//添加文章  
+@Override  
+public void add(Article article) {  
+    //补充属性值  
+    article.setCreateTime(LocalDateTime.now());  
+    article.setUpdateTime(LocalDateTime.now());  
+  
+    Map<String,Object> map = ThreadLocalUtil.get();  
+    Integer userId = (Integer) map.get("id");  
+    article.setCreateUser(userId);  
+  
+    articleMapper.add(article);  
+}
+```
+- **如果 `PageBean` 对象的生命周期很短**，并且**不需要在整个应用程序中共享或由Spring容器进行管理**，那么**直接使用 `new` 关键字创建对象可能更加方便和合适。**
+- 在你的情况下，如果 `PageBean` 对象**只是用于封装返回结果（生命周期很短），并且没有其他的依赖需要注入，那么直接使用 `new` 来创建对象是一种常见的做法**。这样可以**避免在Spring配置中额外定义bean，简化代码，并且可以更灵活地控制对象的生命周期。**
+- **假设我一定要交给容器管理呢？**
+1. 直接在pagebean类上使用@Component注解把它声明为一个bean对象并放入容器中。
+2. 在使用时，直接用@Autowired private PageBean pb;当Spring容器中有一个与被注解字段类型匹配的bean时，Spring会将该bean自动注入到被注解的字段中。
+
+#### 动态sql
+- 动态 SQL 是 MyBatis 框架中的一项重要功能，它允许你**根据不同的条件动态构建 SQL 查询语句**。在实际应用中，动态 SQL 常用于**根据用户传递的参数来生成不同的 SQL 查询，以满足不同的查询需求。**
+- 在你的示例中，由于你的控制器方法 `list` 接受了多个参数，并且这些参数可能会**根据用户的请求存在或不存在**，所以在查询文章列表时，可能会**根据这些参数的不同组合构建不同的查询条件**。因此，你可能需要使用动态 SQL 来根据参数的不同动态生成 SQL 查询语句。
+```java
+//查看文章列表（条件分页）  
+@GetMapping  
+public Result<PageBean<Article>> list(Integer pageNum,  
+                                      Integer pageSize,  
+                                      @RequestParam (required = false) String categoryId,  
+                                      @RequestParam(required = false) String state) {  
+    PageBean<Article> pb = articleService.list(pageNum, pageSize, categoryId, state);  
+    return Result.success(pb);  
+  
+}
+```
+- 根据分类id来查或则发布状态来查或则结合一起来查，这就导致了查询语句的不固定，不能写死，写死一旦某一个参数没有传过来会导致查询失败。
+- xml映射文件：
+- xml文件放在了resource中，结构跟mapper层一样。com/itheima/mapper/
+- 将 XML 文件放置在与 Mapper 接口相同的包结构下是一种常见的做法，这样可以方便地组织和管理相关的 Mapper 接口和 XML 映射文件。这也符合了 MyBatis 的默认配置规则，它会在与 Mapper 接口相同的包路径下查找对应的 XML 映射文件。
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.itheima.mapper.ArticleMapper">  
+    <!--动态sql-->  
+    <select id="list" resultType="com.itheima.pojo.Article">  
+        select * from article  
+        <where>  
+            <if test="categoryId!=null">  
+                category_id=#{categoryId}  
+            </if>  
+            <if test="state!=null">  
+                and state=#{state}  
+            </if>  
+            and create_user=#{userId}  
+        </where>  
+    </select>  
+</mapper>
+```
+1. `<mapper>` 标签：
+    - `namespace` 属性：指定了该 XML 文件对应的 Mapper 接口的全限定名，告诉 MyBatis 这个 XML 文件是用来为哪个 Mapper 接口提供 SQL 映射的。
+2. `<select>` 标签：
+    - `id` 属性：指定了该 SQL 查询语句的唯一标识符，可以通过这个标识符在 Mapper 接口中调用该 SQL 查询语句。**`id` 属性应该与 Mapper 接口中调用 SQL 查询语句的方法名保持一致。这样 MyBatis 才能正确地将方法与 XML 文件中的 SQL 查询语句进行匹配。**
+    - `resultType` 属性：指定了查询结果集的类型，这里指定为 `com.itheima.pojo.Article`，表示查询结果将会映射到 `Article` 类型的对象中。通常用于查询单个对象或者查询结果为简单类型的情况。
+### 获取文章详情
+关于id的校验，前端直接点击进入详细页面，id是一定有的。
+## 其他接口
+### 文件上传
+- 接受前端的数据并返回一个访问的地址（比如头像，文章封面）
+- 先存在本地测试一下接口
+```java
+package com.itheima.controller;  
+  
+import com.itheima.pojo.Result;  
+import org.springframework.web.bind.annotation.PostMapping;  
+import org.springframework.web.bind.annotation.RestController;  
+import org.springframework.web.multipart.MultipartFile;  
+  
+import java.io.File;  
+import java.io.IOException;  
+import java.util.UUID;  
+  
+/**  
+ * @author: Bruce  
+ * @description: 文件上传控制层  
+ * @date: 2024/4/18 21:01  
+ */  
+@RestController  
+public class FileUploadController {  
+    //文件上传，先存到本地磁盘  
+    @PostMapping("/upload")  
+    public Result<String> upload(MultipartFile file) throws IOException {  
+        String originalFilename = file.getOriginalFilename();  
+        //为了避免名称相同导致的覆盖而丢失资源，保证名称唯一  
+        //随机生成一个前缀，把原来的名字的格式后缀截取下来拼接即可  
+        String fileName = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));  
+        file.transferTo(new File("C:\\Users\\bruce_wang\\Desktop\\files\\" + fileName));  
+        return Result.success("Url访问地址");  
+    }  
+}
+```
+#### 阿里云OSS
+- OSS（Object Storage Service）是一种云存储服务，通常由云服务提供商（如阿里云、亚马逊AWS等）提供。它可以用于**存储和管理大规模的非结构化数据，例如文档、图片、视频和其他文件类型**。
+- **第三方服务-通用思路**
+	- 准备工作（注册账号，开通对应服务）
+	- 参照官方SDK编写入门程序
+		- SDK是Software Development Kit（软件开发工具包）的缩写。它是一组用于开发特定软件的工具、库、示例代码和文档的集合。SDK通常由**软件开发公司或平台提供**，旨在简化开发人员创建应用程序、服务或集成产品的过程。
+		- SDK通常包括以下内容：
+**API文档**: 包含有关如何使用SDK提供的各种功能和服务的详细说明。
+**示例代码**: 提供了使用SDK的示例代码，展示了如何在实际应用中调用各种功能。
+**工具**: 可能包括用于调试、测试和部署应用程序的工具。
+**库文件**: 用于与特定编程语言和平台集成的库文件，简化了与SDK交互的过程。
+**模拟器**: 一些SDK可能包含模拟器，允许开发人员在不同环境中测试他们的应用程序。
+- 集成使用
+#### 在自己的程序中集成OSS程序
+- 给了一个入门程序，把不常改变的值定义为常量，把常变的值以方法参数的对外暴露，集成到自己的程序中。
+- 存入后对外的资源访问链接是有规律的，等程序执行完后可以拼接返回出去。
+```Java
+package com.itheima.utils;  
+  
+import com.aliyun.oss.ClientException;  
+import com.aliyun.oss.OSS;  
+import com.aliyun.oss.OSSClientBuilder;  
+import com.aliyun.oss.OSSException;  
+  
+import java.io.InputStream;  
+  
+public class AliOssUtil {  
+    private static final String 阿里云节点 = "阿里云节点";  
+    private static final String 阿里云ID = "阿里云ID";  
+    private static final String 阿里云密钥 = "阿里云密钥"; 
+    private static final String 节点名称 = "节点名称";  
+    //上传文件,返回文件的公网访问地址  
+    public static String uploadFile(String objectName, InputStream inputStream){  
+        // 创建OSSClient实例。  
+        OSS ossClient = new OSSClientBuilder().build(阿里云节点,阿里云ID,阿里云密钥);  
+        //公文访问地址  
+        String url = "";  
+        try {  
+            // 创建存储空间。  
+            ossClient.createBucket(BUCKET_NAME);  
+            ossClient.putObject(BUCKET_NAME, objectName, inputStream);  
+            url = "https://"+BUCKET_NAME+"."+ENDPOINT.substring(ENDPOINT.lastIndexOf("/")+1)+"/"+objectName;  
+        } catch (OSSException oe) {  
+            System.out.println("Caught an OSSException, which means your request made it to OSS, "  
+                    + "but was rejected with an error response for some reason.");  
+            System.out.println("Error Message:" + oe.getErrorMessage());  
+            System.out.println("Error Code:" + oe.getErrorCode());  
+            System.out.println("Request ID:" + oe.getRequestId());  
+            System.out.println("Host ID:" + oe.getHostId());  
+        } catch (ClientException ce) {  
+            System.out.println("Caught an ClientException, which means the client encountered "  
+                    + "a serious internal problem while trying to communicate with OSS, "  
+                    + "such as not being able to access the network.");  
+            System.out.println("Error Message:" + ce.getMessage());  
+        } finally {  
+            if (ossClient != null) {  
+                ossClient.shutdown();  
+            }  
+        }  
+        return url;  
+    }  
+}
+```
+- 在文件上传接口调用集成的OSS程序
+```Java
+package com.itheima.controller;  
+  
+import com.itheima.pojo.Result;  
+import com.itheima.utils.AliOssUtil;  
+import org.springframework.web.bind.annotation.PostMapping;  
+import org.springframework.web.bind.annotation.RestController;  
+import org.springframework.web.multipart.MultipartFile;  
+  
+import java.io.File;  
+import java.io.IOException;  
+import java.util.UUID;  
+  
+/**  
+ * @author: Bruce  
+ * @description: 文件上传控制层  
+ * @date: 2024/4/18 21:01  
+ */  
+@RestController  
+public class FileUploadController {  
+    //文件上传，先存到本地磁盘（后改为集成的阿里云OSS程序）  
+    @PostMapping("/upload")  
+    public Result<String> upload(MultipartFile file) throws IOException {  
+        String originalFilename = file.getOriginalFilename();  
+        //为了避免名称相同导致的覆盖而丢失资源，保证名称唯一  
+        //随机生成一个前缀，把原来的名字的格式后缀截取下来拼接即可  
+        String fileName = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));  
+        //file.transferTo(new File("C:\\Users\\bruce_wang\\Desktop\\files\\" + fileName));  
+        String url =  AliOssUtil.uploadFile(fileName, file.getInputStream());  
+        return Result.success(url);  
+    }  
+}
+```
+- 即使你没有显式地使用`@RequestParam("file")`注解来声明接收上传文件的参数名，Spring MVC 也会尝试自动将`multipart/form-data`请求体中的文件部分映射到方法的参数中。在这种情况下，默认的参数名是根据表单中文件上传字段的名称来确定的。通常情况下，**如果表单中上传文件字段的名称为`file`，Spring MVC 会自动将其映射到方法参数中的`MultipartFile`对象。**
+- 即使你没有显式地使用`@RequestParam("file")`注解，你仍然可以在方法参数中直接使用`MultipartFile`类型的参数来接收上传的文件，**然后通过`file.getInputStream()`方法获取上传文件的输入流。** 通过调用`file.getInputStream()`方法，可以获取到上传文件的输入流，然后这个输入流会被传递给`AliOssUtil.uploadFile`方法，该方法会将输入流中的文件上传到阿里云OSS。
+- **默认情况下，Spring Boot的上传文件大小限制是1MB（1048576字节）**。因此，你需要增加文件上传大小的限制。
+- 可以在`application.properties`文件中添加上传文件大小限制的配置。如果你已经有了这个文件，就在这个文件中添加即可，不需要重新创建。
+```
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+```
+## 登录优化-redis（令牌主动失效机制）
+### 一些思考
+- 令牌能解析就能使用，因为这个程序中jwt令牌信息中仅仅携带了用户id和用户名。
+- 当服务端接收到一个 JWT 令牌时，它可以通过解析 JWT 来获取其中的用户信息，但是**这并不意味着服务端会自动去数据库中查询相应用户的信息，如果会去核对，这样和再输入一次账号密码到数据库查询一样了，那jwt就没有存在的必要了**。JWT 本身并不包含用户的密码或敏感信息，而是包含了一些标识用户的信息，比如用户ID和用户名。
+- JWT 令牌中携带的用户信息**并不是自动映射到数据库中的用户信息**，而是用于**帮助服务端识别用户身份和权限，以便决定是否授权用户访问某些资源**。
+- 在此程序中，**jwt令牌被拦截器解析保存到局部线程后，凭借id和用户名去访问其他资源了。** 而不是每访问一个资源都要先去用户数据库查有没有这个人。方便了很多。
+- **也就是说如果我知道了用户在数据库中的id和用户名的话，我就可以伪造一个jwt令牌，从而访问该用户的资源？**
+- 是的，如果你知道了用户在数据库中的ID和用户名，并且了解了 JWT 的生成规则和签名验证规则，理论上你可以伪造一个包含这些信息的 JWT 令牌。**然而，这并不意味着你可以访问该用户的资源。**
+- 在实际应用中，JWT **通常会结合其他安全措施一起使用，比如配合 OAuth 2.0 或 OpenID Connect 等认证和授权框架。** 此外，服务端也会对 JWT 进行**签名验证**，并且根据 JWT 中的信息来决定是否授权用户访问资源。如果伪造的 JWT 令牌**无法通过签名验证或者携带的信息与实际情况不符**，服务端是不会授权用户访问资源的。因此，JWT 的安全性仍然取决于其签名的可靠性和服务端的身份验证和授权逻辑。
+### redis的应用背景
+- 假设用户修改了登录密码。再一次登录时，重新下发了新的令牌，那么旧令牌应该作废的。而旧令牌依旧可以用来访问该用户的其他资源。
+- 假设别人知道了你的密码，而你想通过修改密码的方式立刻作废之前密码的使用权限。如果不作废旧令牌，那么别人拿旧令牌依旧可以访问你的资源。
+- **引入redis**:
+- 登录成功后，把令牌相应给浏览器的同时把令牌放一份在redis中。修改密码之后把新令牌替换旧令牌。
+- 访问资源时，需要在拦截器中先核对令牌的合法性再从redis中获取一份一样的令牌，获取不到一样的令牌就无法访问相关资源。这样就解决问题了。
+### 实现
+#### springboot集成redis
+- 引入起步依赖
+```xml
+<!--redis依赖-->  
+<dependency>  
+    <groupId>org.springframework.boot</groupId>  
+    <artifactId>spring-boot-starter-data-redis</artifactId>  
+</dependency>
+```
+- 在yml配置文件中配置连接信息
+```yml
+spring:  
+  data:  
+    redis:  
+      host: localhost  
+      port: 6379
+```
+- 调用API(StringRedisTemplate)完成字符串的存取操作测试
+#### 令牌主动失效机制
+- 登录成功后，给浏览器响应令牌的同时，把该令牌存储到redis中
+```Java
+@RequestMapping("/login")  
+public Result<String> login(@Pattern(regexp = "^\\S{5,16}$") String username, @Pattern(regexp = "^\\S{5,16}$") String password) {  
+    //根据用户名查询用户  
+    User loginUser = userService.fingByUserName(username);  
+    //判断用户是否存在  
+    if (loginUser == null) {  
+        return Result.error("用户名错误！");  
+    }  
+    //判断密码是否正确（login对象中的password是加密过的）  
+    if (Md5Util.getMD5String(password).equals(loginUser.getPassword())) {  
+        //登录成功后返回一个jwt令牌（令牌头部不需要存很多东西，能代表用户即可）  
+        Map<String, Object> claims = new HashMap<>();  
+        claims.put("id", loginUser.getId());  
+        claims.put("username", loginUser.getUsername());  
+        String token = JwtUtil.genToken(claims);  
+        //返回令牌的同时存到redis中  
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();  
+        //过期时间与jwt令牌同步，以token为键又为值，到时候拦截器好拿一点  
+        operations.set(token,token,1, TimeUnit.HOURS);  
+        return Result.success(token);  
+    }  
+    return Result.error("密码错误！");  
+}
+```
+- 拦截器中需要验证浏览器携带的令牌，并同时需要获取redis中存储的与之相同的令牌。
+```Java
+package com.itheima.interceptors;  
+  
+import com.itheima.utils.JwtUtil;  
+import com.itheima.utils.ThreadLocalUtil;  
+import jakarta.servlet.http.HttpServletRequest;  
+import jakarta.servlet.http.HttpServletResponse;  
+import org.springframework.beans.factory.annotation.Autowired;  
+import org.springframework.data.redis.core.StringRedisTemplate;  
+import org.springframework.data.redis.core.ValueOperations;  
+import org.springframework.stereotype.Component;  
+import org.springframework.web.servlet.HandlerInterceptor;  
+import java.util.Map;  
+  
+/**  
+ * @author: Bruce  
+ * @description: 登录状态拦截器  
+ * @date: 2024/4/13 18:37  
+ */@Component //bean对象注解声明  
+public class LoginInterceptor implements HandlerInterceptor {  
+    @Autowired  
+    private StringRedisTemplate stringRedisTemplate;  
+    @Override  
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {  
+        //验证令牌  
+        //从请求中拿到token  
+        String token = request.getHeader("Authorization");  
+        //验证登录状态token  
+        try {  
+            //从redis中获取相同的令牌进行验证  
+            ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();  
+            String redisToken = operations.get(token);  
+            //由于token作键又作值，有就必定相同。因为token也是唯一的  
+            if (redisToken == null) {  
+                //redisToken已经失效了  
+                //抛出异常被catch捕获  
+                throw new RuntimeException();  
+            }  
+            //token也会过期，在生成令牌时就有时间，过了时间也解析不了，也会抛异常被捕获。  
+            Map<String,Object> claims = JwtUtil.parseToken(token);  
+            //把业务数据存到threadLocal中，在线程内部共享  
+            ThreadLocalUtil.set(claims);  
+            //放行  
+            return true;  
+        } catch (Exception e) {  
+            //响应状态码为401  
+            response.setStatus(401);  
+            //不放行  
+            return false;  
+        }  
+    }  
+  
+    @Override  
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {  
+        //释放数据  
+        ThreadLocalUtil.remove();  
+    }  
+}
+```
+- 当用户修改成功后，删除redis中原来的旧令牌。
+```Java
+//更新用户密码  
+@PatchMapping("/updatePwd")  
+public Result updatePwd(@RequestBody Map<String,String> params,@RequestHeader("Authorization") String token){  
+    //1.校验参数  
+    String oldPwd = params.get("old_pwd");  
+    String newPwd = params.get("new_pwd");  
+    String rePwd = params.get("re_pwd");  
+    if(!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)){  
+        //有一个没有就不处理  
+        return Result.error("缺少必要的参数");  
+    }  
+    //校验原密码是否一致（先根据用户名查一下原密码）  
+    Map<String,Object> map = ThreadLocalUtil.get();  
+    String username = (String) map.get("username");  
+    User loginUser = userService.fingByUserName(username);  
+    if(!loginUser.getPassword().equals(Md5Util.getMD5String(oldPwd))){  
+        return Result.error("原密码填写不正确");  
+    }  
+  
+    //新密码是否一致  
+    if(!newPwd.equals(rePwd)){  
+        return Result.error("两次填写的密码不一致");  
+    }  
+  
+    //更新数据  
+    userService.updatePwd(newPwd);  
+    //更新完就删除redis中的令牌  
+    ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();  
+    operations.getOperations().delete(token);  
+    return Result.success();  
+}
+```
+- 到时候redis和项目线上部署之后，就可以实现线上的令牌主动失效机制。
+## springboot项目部署
+- 本地不太可能24小时运行，需要线上部署运行。
+- 用打包插件，编译打包项目为jar包进行线上部署。
+- jar包部署必须要有jre环境（提供jvm虚拟机）。
+### redis部署：
+1. **本地部署：** 在开发环境或测试环境下，可以将 Redis 直接安装在开发人员或测试人员的本地计算机上。这种部署方式**适用于开发和测试目的**，但不适合生产环境。
+2. **单机部署：** 在生产环境中，可以选择在**单个服务器上部署 Redis**。这种部署方式**适用于小型应用或对数据一致性要求不高的场景。**
+3. **集群部署：** 在大型生产环境中，可以通过 Redis 集群实现高可用性和水平扩展。**Redis 集群可以在多个服务器上部署，以实现负载均衡和故障恢复。**
+4. **容器化部署：** 使用容器技术（如 Docker）可以将 Redis 部署为容器，并通过容器编排工具（如 Kubernetes）管理 Redis 集群。这种部署方式具有**灵活性和可移植性，可以轻松地在不同的环境中部署和扩展。**
+5. **云服务部署：** 多个云服务提供商（如 AWS、Azure、Google Cloud）都提供了**托管的 Redis 服务，可以直接在云平台上创建和管理 Redis 实例。** 这种部署方式简化了运维工作，并提供了高可用性和可扩展性。
+- 部署redis后还要去程序中修改一下redis的连接信息。
+### spring boot属性配置方式
+- **项目配置文件方式（优先级1，最高）：**
+- 项目中的properties文件或则yml文件
+- 打包后怎么修改呢？
+- **命令行参数方式（优先级4）：**
+- 在命令行后直接加 --键=值  --server.port=9090
+- 此方式参数会被启动类接收
+```Java
+package com.itheima;  
+  
+import org.springframework.boot.SpringApplication;  
+import org.springframework.boot.autoconfigure.SpringBootApplication;  
+  
+  
+@SpringBootApplication  
+public class BigNewsApplication {  
+  
+    public static void main(String[] args) {  
+        SpringApplication.run(BigNewsApplication.class, args);  
+    }  
+}
+```
+
+- **环境变量方式（优先级3）：**
+- 在用户变量中设置，如变量名server.port   变量值9090
+- 环境变量发生变化，需要重新启动才能生效。
+- **外部配置文件方式（优先级2）：**
+- 在jar包目中创建一个application.yml文件，就可以批量配置。
+### 多环境开发(配置文件的结构设计)
+- 三个常见环境:
+- 开发，测试，生产
+- 需要不断的更改配置文件（比如数据库连接信息），导致修改繁琐，容易出错。
+- **spring boot多环境开发-pofiles：**
+- **为每一个环境单独配置一份设置，程序在那种环境下就运行那种配置。**
+- springboot提供的profiles可以用来隔离应用程序配置的各个部分，并在特定环境下指定部分配置生效
+- **如何分隔不同环境的配置？**
+- 用 --- 
+- **如何指定那些配置属于那个环境？**
+```yml
+	spring:
+		config:
+		 activate:
+		  on-profile:环境名称
+```
+- **如何指定哪个环境的配置生效？**
+```yaml
+	spring:
+	 profiles:
+	  active:环境名称
+```
+- 配置文件：
+- 四个部分组成：
+- 通用配置，指定那个环境配置生效
+- 三个用---分隔的**开发，测试，生产**环境的配置的定义。
+- 如果通用配置和特定环境配置冲突的话，启用特定环境的配置优先级高。
+- **一个文件配置太多很复杂，可以各自用一个文件，以文件名来区分。**
+- application-dev.yml application-test.yml  application-pro.yml
+- 在application。yml文件中进行共性配置和激活对应环境。
+- 要是一个配置文件中还是太多，还可以按功能进行分组，继续拆分为不同的文件。application-devServer.yml application-devDB.yml  application-devSlef.yml
+- 在application中激活
+```yml
+spring：
+	profiles：
+		active:dev
+		group:
+			"dev":devServer,devDB,devSlef
+```
+
+## 前端
+- 看ppt速度过一遍。
